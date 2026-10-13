@@ -1,0 +1,10 @@
+dist/
+.astro/
+node_modules/
+.env
+.env.*
+!.env.example
+_import/
+.DS_Store
+Thumbs.db
+docs/lighthouse/*.json
