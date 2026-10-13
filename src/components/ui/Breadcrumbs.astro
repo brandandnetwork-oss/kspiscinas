@@ -1,0 +1,38 @@
+---
+/**
+ * Migas de pan visibles. El JSON-LD BreadcrumbList se genera en la página
+ * con `breadcrumbSchema()` a partir de los mismos datos.
+ */
+import type { Crumb } from '@/lib/schema';
+
+interface Props {
+  items: Crumb[];
+  dark?: boolean;
+}
+const { items, dark = false } = Astro.props;
+---
+
+<nav aria-label="Migas de pan">
+  <ol class:list={['flex flex-wrap items-center gap-x-2 gap-y-1 text-sm', dark ? 'text-white/75' : 'text-piedra']}>
+    {
+      items.map((c, i) => (
+        <li class="flex items-center gap-2">
+          {i > 0 && (
+            <span aria-hidden="true" class={dark ? 'text-cielo' : 'text-azul'}>
+              /
+            </span>
+          )}
+          {i < items.length - 1 ? (
+            <a href={c.href} class:list={['no-underline hover:underline', dark ? 'text-white/85' : 'text-azul-texto']}>
+              {c.name}
+            </a>
+          ) : (
+            <span aria-current="page" class={dark ? 'text-white' : 'text-tinta'}>
+              {c.name}
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

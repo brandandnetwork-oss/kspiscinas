@@ -1,0 +1,76 @@
+---
+/**
+ * Cabecera de página interior: migas, antetítulo, H1 e introducción.
+ * Con `image`, la foto ocupa el fondo (y se carga como imagen LCP).
+ */
+import { Picture } from 'astro:assets';
+import Breadcrumbs from '@/components/ui/Breadcrumbs.astro';
+import type { Crumb } from '@/lib/schema';
+
+interface Props {
+  title: string;
+  eyebrow?: string;
+  crumbs: Crumb[];
+  image?: ImageMetadata;
+  imageAlt?: string;
+}
+const { title, eyebrow, crumbs, image, imageAlt = '' } = Astro.props;
+---
+
+{
+  image ? (
+    <section class="relative isolate overflow-hidden bg-noche">
+      <Picture
+        src={image}
+        formats={['avif', 'webp']}
+        widths={[480, 768, 1024, 1440, 1920]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        alt={imageAlt}
+        class="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+      <div
+        class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(19_24_74/0.55)_0%,rgb(19_24_74/0.8)_60%,rgb(19_24_74/0.95)_100%)] lg:bg-[linear-gradient(90deg,rgb(19_24_74/0.94)_0%,rgb(19_24_74/0.75)_50%,rgb(19_24_74/0.25)_100%)]"
+        aria-hidden="true"
+      />
+      <div class="container-ks py-14 sm:py-20 lg:py-28">
+        <Breadcrumbs items={crumbs} dark />
+        <div class="mt-8 max-w-3xl">
+          {eyebrow && (
+            <p class="eyebrow-claro flex items-center gap-3">
+              <span class="teselas" style="--t:8px" aria-hidden="true" />
+              {eyebrow}
+            </p>
+          )}
+          <h1 class="mt-4 text-4xl font-semibold !text-white sm:text-5xl lg:text-6xl">{title}</h1>
+          {Astro.slots.has('default') && (
+            <div class="mt-6 max-w-2xl text-lg text-white/85 sm:text-xl">
+              <slot />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="bg-espuma">
+      <div class="container-ks py-14 sm:py-20">
+        <Breadcrumbs items={crumbs} />
+        <div class="mt-8 max-w-3xl">
+          {eyebrow && (
+            <p class="eyebrow flex items-center gap-3">
+              <span class="teselas" style="--t:8px" aria-hidden="true" />
+              {eyebrow}
+            </p>
+          )}
+          <h1 class="mt-4 text-4xl font-semibold sm:text-5xl lg:text-6xl">{title}</h1>
+          {Astro.slots.has('default') && (
+            <div class="mt-6 max-w-2xl text-lg text-piedra sm:text-xl">
+              <slot />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

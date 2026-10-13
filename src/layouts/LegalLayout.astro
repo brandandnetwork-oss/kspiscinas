@@ -1,0 +1,38 @@
+---
+/**
+ * Plantilla de páginas legales (Markdown en src/pages/*.md).
+ * Los textos son plantillas pendientes de revisión por la empresa: todo lo
+ * marcado como [PENDIENTE] debe completarse antes de publicar.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import { breadcrumbSchema, type Crumb } from '@/lib/schema';
+
+interface Props {
+  frontmatter: { title: string; description: string; updated: string };
+  url?: string;
+}
+const { frontmatter } = Astro.props;
+const path = Astro.url.pathname;
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: frontmatter.title, href: path },
+];
+---
+
+<BaseLayout title={`${frontmatter.title} | KS Piscinas`} description={frontmatter.description} schema={[breadcrumbSchema(crumbs)]}>
+  <PageHeader title={frontmatter.title} crumbs={crumbs}>
+    Última actualización: {frontmatter.updated}
+  </PageHeader>
+  <section class="py-14 lg:py-20">
+    <div class="container-ks max-w-3xl">
+      <p class="mb-10 rounded-xl border-l-4 border-coral bg-coral/10 p-4 text-sm text-coral-oscuro">
+        Texto en plantilla pendiente de revisión por la empresa. Los datos marcados como [PENDIENTE] se
+        completarán antes de la publicación definitiva.
+      </p>
+      <article class="prose-ks">
+        <slot />
+      </article>
+    </div>
+  </section>
+</BaseLayout>
