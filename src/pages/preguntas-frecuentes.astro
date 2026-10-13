@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import FaqAccordion from '@/components/ui/FaqAccordion.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import { breadcrumbSchema, faqSchema, type Crumb } from '@/lib/schema';
+
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Preguntas frecuentes', href: '/preguntas-frecuentes/' },
+];
+
+const faqs = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
+const toItem = (f: (typeof faqs)[number]) => ({ question: f.data.question, answer: f.data.answer });
+
+// Grupo general (las de la home) y un grupo por servicio; cada pregunta aparece una sola vez.
+const usadas = new Set<string>();
+const grupos = [
+  { id: 'generales', title: 'Preguntas generales', items: faqs.filter((f) => f.data.showOn.includes('home')) },
+  ...servicios.map((s) => ({ id: s.id, title: s.data.navLabel, items: faqs.filter((f) => f.data.showOn.includes(s.id)) })),
+]
+  .map((g) => {
+    const items = g.items.filter((f) => !usadas.has(f.id));
+    items.forEach((f) => usadas.add(f.id));
+    return { ...g, items: items.map(toItem) };
+  })
+  .filter((g) => g.items.length);
+---
+
+<BaseLayout
+  title="Preguntas frecuentes sobre piscinas de obra | KS Piscinas"
+  description="Resolvemos tus dudas sobre construcción y reforma de piscinas de obra en Madrid: gunitado, gresite o porcelánico, depuración, equipamiento y exteriores."
+  schema={[breadcrumbSchema(crumbs), faqSchema(grupos.flatMap((g) => g.items))]}
+>
+  <PageHeader title="Preguntas frecuentes" eyebrow="Resolvemos tus dudas" crumbs={crumbs}>
+    Lo que más nos preguntáis sobre construir, reformar y equipar una piscina. ¿No encuentras tu duda?
+    <a href="/contacto/">Escríbenos</a>.
+  </PageHeader>
+
+  <section class="py-16 lg:py-24" aria-label="Preguntas por tema">
+    <div class="container-ks grid gap-12 lg:grid-cols-[16rem_1fr] lg:gap-16">
+      <nav aria-label="Temas" class="lg:sticky lg:top-28 lg:self-start">
+        <ul class="flex flex-wrap gap-2 lg:flex-col lg:gap-1">
+          {
+            grupos.map((g) => (
+              <li>
+                <a href={`#${g.id}`} class="inline-block rounded-full px-4 py-2 font-display text-[0.95rem] font-medium text-marino no-underline ring-1 ring-linea hover:bg-espuma lg:rounded-xl lg:ring-0">
+                  {g.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="space-y-14">
+        {
+          grupos.map((g) => (
+            <section aria-labelledby={g.id}>
+              <h2 id={g.id} class="text-2xl font-semibold sm:text-3xl">
+                {g.title}
+              </h2>
+              <div class="mt-6">
+                <FaqAccordion items={g.items} />
+              </div>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaContact />
+</BaseLayout>

@@ -1,0 +1,78 @@
+---
+import { Picture } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, type Crumb } from '@/lib/schema';
+import { site } from '@/config/site';
+
+const posts = (await getCollection('blog', (p) => !p.data.draft)).sort(
+  (a, b) => b.data.datePublished.getTime() - a.data.datePublished.getTime(),
+);
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Guías', href: '/blog/' },
+];
+const fecha = (d: Date) => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title="Guías sobre piscinas de obra | KS Piscinas"
+  description="Guías prácticas para construir o reformar tu piscina en Madrid: gresite o porcelánico, piscina de obra o prefabricada, normativa y más."
+  schema={[
+    breadcrumbSchema(crumbs),
+    {
+      '@type': 'Blog',
+      name: 'Guías de KS Piscinas',
+      url: `${site.url}/blog/`,
+      inLanguage: 'es-ES',
+      blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.data.title, url: `${site.url}/blog/${p.id}/` })),
+    },
+  ]}
+>
+  <PageHeader title="Guías sobre piscinas" eyebrow="Aprende antes de decidir" crumbs={crumbs}>
+    Lo que conviene saber antes de construir o reformar una piscina, explicado de forma clara.
+  </PageHeader>
+
+  <section aria-label="Artículos" class="py-16 lg:py-24">
+    <ul class="container-ks grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {
+        posts.map((p, i) => (
+          <li data-reveal style={`--reveal-delay:${i}`}>
+            <article class="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card ring-1 ring-linea transition-shadow hover:shadow-lift">
+              <div class="aspect-[16/10] overflow-hidden">
+                <Picture
+                  src={p.data.image}
+                  formats={['avif', 'webp']}
+                  widths={[400, 600, 800]}
+                  sizes="(min-width: 1024px) 380px, (min-width: 768px) 46vw, 92vw"
+                  alt={p.data.imageAlt}
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div class="flex flex-1 flex-col p-6">
+                <p class="text-sm text-piedra">
+                  <time datetime={p.data.datePublished.toISOString()}>{fecha(p.data.datePublished)}</time>
+                </p>
+                <h2 class="mt-2 text-xl font-semibold">
+                  <a href={`/blog/${p.id}/`} class="text-marino no-underline after:absolute after:inset-0">
+                    {p.data.title}
+                  </a>
+                </h2>
+                <p class="mt-3 text-[0.98rem] text-piedra">{p.data.description}</p>
+                <span class="mt-auto inline-flex items-center gap-2 pt-5 font-display text-sm font-semibold text-azul-texto" aria-hidden="true">
+                  Leer guía <Icon name="arrow" size={16} class="transition-transform group-hover:translate-x-1" />
+                </span>
+              </div>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <CtaContact />
+</BaseLayout>
