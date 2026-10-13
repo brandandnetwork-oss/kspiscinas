@@ -1,0 +1,75 @@
+---
+/**
+ * Comparador antes/después con deslizador accesible (input range: teclado y
+ * lector de pantalla). Sin JS se muestran las dos fotos una junto a otra.
+ * Solo anima clip-path del elemento superior; las imágenes no se mueven.
+ */
+import { Picture } from 'astro:assets';
+
+interface Foto {
+  src: ImageMetadata;
+  alt: string;
+}
+interface Props {
+  before: Foto;
+  after: Foto;
+}
+const { before, after } = Astro.props;
+---
+
+<ba-slider class="block">
+  <!-- Sin JS: dos fotos con su pie -->
+  <div class="ba-static grid gap-4 sm:grid-cols-2">
+    <figure>
+      <Picture src={before.src} formats={['avif', 'webp']} widths={[480, 800]} sizes="(min-width: 640px) 45vw, 92vw" alt={before.alt} class="aspect-[4/3] w-full rounded-[var(--radius-card)] object-cover" />
+      <figcaption class="mt-2 text-sm text-piedra">Antes</figcaption>
+    </figure>
+    <figure>
+      <Picture src={after.src} formats={['avif', 'webp']} widths={[480, 800]} sizes="(min-width: 640px) 45vw, 92vw" alt={after.alt} class="aspect-[4/3] w-full rounded-[var(--radius-card)] object-cover" />
+      <figcaption class="mt-2 text-sm text-piedra">Después</figcaption>
+    </figure>
+  </div>
+
+  <!-- Con JS: comparador superpuesto -->
+  <figure class="ba-interactive relative hidden overflow-hidden rounded-[var(--radius-card)] select-none">
+    <div class="ba-after">
+      <Picture src={after.src} formats={['avif', 'webp']} widths={[640, 1000, 1400]} sizes="(min-width: 1024px) 760px, 92vw" alt={after.alt} class="aspect-[4/3] w-full object-cover" />
+      <span class="absolute right-3 bottom-3 rounded-full bg-noche/75 px-3 py-1 text-sm font-semibold text-white">Después</span>
+    </div>
+    <div class="ba-before absolute inset-0" style="clip-path: inset(0 50% 0 0)">
+      <Picture src={before.src} formats={['avif', 'webp']} widths={[640, 1000, 1400]} sizes="(min-width: 1024px) 760px, 92vw" alt={before.alt} class="h-full w-full object-cover" />
+      <span class="absolute bottom-3 left-3 rounded-full bg-noche/75 px-3 py-1 text-sm font-semibold text-white">Antes</span>
+    </div>
+    <div class="ba-handle pointer-events-none absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-white shadow-lift" aria-hidden="true">
+      <span class="absolute top-1/2 left-1/2 flex size-11 -translate-1/2 items-center justify-center rounded-full bg-white text-marino shadow-lift">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6-6 6 6 6M15 6l6 6-6 6" /></svg>
+      </span>
+    </div>
+    <label class="absolute inset-0">
+      <span class="sr-only">Desliza para comparar antes y después</span>
+      <input type="range" min="0" max="100" value="50" class="h-full w-full cursor-ew-resize opacity-0" />
+    </label>
+  </figure>
+</ba-slider>
+
+<script>
+  class BaSlider extends HTMLElement {
+    connectedCallback() {
+      this.querySelector('.ba-static')?.classList.add('hidden');
+      this.querySelector('.ba-interactive')?.classList.remove('hidden');
+      const input = this.querySelector<HTMLInputElement>('input[type=range]');
+      const before = this.querySelector<HTMLElement>('.ba-before');
+      const handle = this.querySelector<HTMLElement>('.ba-handle');
+      if (!input || !before || !handle) return;
+      const update = () => {
+        const v = Number(input.value);
+        before.style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+        handle.style.left = `${v}%`;
+        input.setAttribute('aria-valuetext', `${v}% antes, ${100 - v}% después`);
+      };
+      input.addEventListener('input', update);
+      update();
+    }
+  }
+  customElements.define('ba-slider', BaSlider);
+</script>

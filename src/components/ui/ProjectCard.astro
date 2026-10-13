@@ -1,0 +1,65 @@
+---
+/**
+ * Tarjeta de obra. Si la obra tiene ficha (municipio informado) enlaza a ella;
+ * si no, abre la foto en el visor (lightbox) de la galería.
+ */
+import { Picture, getImage } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { hasFicha } from '@/lib/proyectos';
+
+interface Props {
+  proyecto: CollectionEntry<'proyectos'>;
+  sizes?: string;
+}
+const { proyecto, sizes = '(min-width: 1280px) 400px, (min-width: 640px) 46vw, 92vw' } = Astro.props;
+const { data } = proyecto;
+const ficha = hasFicha(proyecto);
+const full = await getImage({ src: data.image, width: 1600, format: 'webp' });
+const meta = [data.revestimiento, ...data.elementos].filter(Boolean).slice(0, 3);
+---
+
+<figure class="group relative h-full overflow-hidden rounded-[var(--radius-card)] bg-white shadow-card ring-1 ring-linea">
+  <div class="aspect-[4/3] overflow-hidden bg-espuma">
+    <Picture
+      src={data.image}
+      formats={['avif', 'webp']}
+      widths={[360, 540, 800]}
+      sizes={sizes}
+      alt={data.imageAlt}
+      loading="lazy"
+      class="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-agua)] group-hover:scale-105"
+    />
+  </div>
+  <figcaption class="p-5">
+    <h3 class="text-lg font-semibold">
+      {
+        ficha ? (
+          <a href={`/proyectos/${proyecto.id}/`} class="text-marino no-underline after:absolute after:inset-0">
+            {data.title}
+          </a>
+        ) : (
+          <a
+            href={full.src}
+            data-lightbox
+            data-alt={data.imageAlt}
+            data-caption={data.title}
+            class="text-marino no-underline after:absolute after:inset-0"
+          >
+            {data.title}
+            <span class="sr-only"> (ampliar foto)</span>
+          </a>
+        )
+      }
+    </h3>
+    {data.municipio && <p class="mt-1 text-sm text-piedra">{data.municipio}</p>}
+    {
+      meta.length > 0 && (
+        <ul class="mt-3 flex flex-wrap gap-2" aria-label="Características">
+          {meta.map((m) => (
+            <li class="rounded-full bg-espuma px-3 py-1 text-xs font-medium text-marino">{m}</li>
+          ))}
+        </ul>
+      )
+    }
+  </figcaption>
+</figure>

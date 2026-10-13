@@ -1,0 +1,184 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import ProjectCard from '@/components/ui/ProjectCard.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, type Crumb } from '@/lib/schema';
+import { getProyectos } from '@/lib/proyectos';
+import { site } from '@/config/site';
+import cabecera from '@/assets/obras/piscina-iluminacion-led-noche.jpg';
+
+const proyectos = await getProyectos();
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Proyectos', href: '/proyectos/' },
+];
+
+const uniq = (xs: (string | undefined)[]) => [...new Set(xs.filter((x): x is string => Boolean(x)))].sort((a, b) => a.localeCompare(b, 'es'));
+
+// Grupos de filtro: solo se muestran los que tienen datos (tipo y municipio
+// aparecerán en cuanto se informen en las fichas).
+const grupos = [
+  { key: 'tipo', label: 'Tipo de obra', values: uniq(proyectos.map((p) => p.data.tipo)) },
+  { key: 'revestimiento', label: 'Revestimiento', values: uniq(proyectos.map((p) => p.data.revestimiento)) },
+  { key: 'elemento', label: 'Elementos', values: uniq(proyectos.flatMap((p) => p.data.elementos)) },
+  { key: 'municipio', label: 'Municipio', values: uniq(proyectos.map((p) => p.data.municipio)) },
+].filter((g) => g.values.length > (g.key === 'revestimiento' ? 1 : 0));
+---
+
+<BaseLayout
+  title="Proyectos de piscinas de obra en Madrid | KS Piscinas"
+  description="Galería de piscinas construidas y reformadas por KS Piscinas en Madrid: gresite, porcelánico, escaleras de obra, iluminación LED y exteriores. Filtra y amplía cada foto."
+  ogImage={cabecera}
+  ogImageAlt="Piscina de obra iluminada de noche con focos LED"
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHeader
+    title="Proyectos de piscinas"
+    eyebrow="Nuestras obras"
+    crumbs={crumbs}
+    image={cabecera}
+    imageAlt="Piscina de obra en forma de L iluminada de noche con focos LED"
+  >
+    Obras reales construidas y reformadas por nuestro equipo. Filtra por revestimiento o por los
+    elementos que te interesan y amplía cada foto.
+  </PageHeader>
+
+  <section aria-labelledby="galeria-titulo" class="py-14 lg:py-20">
+    <div class="container-ks">
+      <h2 id="galeria-titulo" class="sr-only">Galería de proyectos</h2>
+
+      <form id="filtros" class="hidden space-y-6 rounded-[var(--radius-card)] bg-espuma p-5 ring-1 ring-linea sm:p-7" aria-label="Filtrar proyectos">
+        {
+          grupos.map((g) => (
+            <fieldset>
+              <legend class="flex items-center gap-2 font-display text-sm font-semibold tracking-[0.12em] text-marino uppercase">
+                <Icon name="filter" size={16} class="text-azul-texto" />
+                {g.label}
+              </legend>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <label class="chip">
+                  <input type="radio" name={g.key} value="" checked class="sr-only" />
+                  <span>Todos</span>
+                </label>
+                {g.values.map((v) => (
+                  <label class="chip">
+                    <input type="radio" name={g.key} value={v} class="sr-only" />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))
+        }
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-linea pt-5">
+          <p id="filtros-resultado" class="font-display font-medium text-marino" aria-live="polite">
+            {proyectos.length} proyectos
+          </p>
+          <button type="reset" class="btn btn-borde !min-h-10 !py-2 text-sm">Quitar filtros</button>
+        </div>
+      </form>
+
+      <ul id="galeria" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          proyectos.map((p) => (
+            <li
+              data-tipo={p.data.tipo ?? ''}
+              data-revestimiento={p.data.revestimiento ?? ''}
+              data-elemento={p.data.elementos.join('|')}
+              data-municipio={p.data.municipio ?? ''}
+            >
+              <ProjectCard proyecto={p} />
+            </li>
+          ))
+        }
+      </ul>
+      <p id="galeria-vacia" class="mt-10 hidden rounded-[var(--radius-card)] bg-arena p-8 text-center text-piedra">
+        No hay proyectos con esa combinación de filtros. Prueba a quitar alguno.
+      </p>
+
+      <p class="mt-14 flex flex-col items-start gap-4 rounded-[var(--radius-card)] bg-marino p-7 text-white sm:flex-row sm:items-center sm:justify-between">
+        <span class="text-lg">Publicamos las obras en curso en Instagram.</span>
+        <a href={site.social.instagram} rel="noopener" target="_blank" class="btn btn-claro">
+          <Icon name="instagram" size={18} />
+          Seguir {site.social.instagramHandle}<span class="sr-only"> (se abre en una ventana nueva)</span>
+        </a>
+      </p>
+    </div>
+    <Lightbox />
+  </section>
+
+  <CtaContact title="¿Quieres una piscina como estas?" />
+</BaseLayout>
+
+<style>
+  .chip {
+    display: inline-flex;
+    cursor: pointer;
+  }
+  .chip span {
+    border-radius: 999px;
+    background: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-marino);
+    box-shadow: inset 0 0 0 1px var(--color-linea);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .chip:hover span {
+    box-shadow: inset 0 0 0 1px var(--color-marino);
+  }
+  .chip input:checked + span {
+    background: var(--color-marino);
+    color: white;
+  }
+  .chip input:focus-visible + span {
+    outline: 3px solid var(--color-azul);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  // Filtro progresivo: sin JS se ven todas las obras y el formulario no aparece.
+  const form = document.getElementById('filtros') as HTMLFormElement | null;
+  const items = [...document.querySelectorAll<HTMLLIElement>('#galeria > li')];
+  const resultado = document.getElementById('filtros-resultado');
+  const vacia = document.getElementById('galeria-vacia');
+
+  if (form && resultado && vacia) {
+    form.classList.remove('hidden');
+    const keys = ['tipo', 'revestimiento', 'elemento', 'municipio'];
+
+    const apply = (updateUrl = true) => {
+      const data = new FormData(form);
+      const active = keys.map((k) => [k, String(data.get(k) ?? '')] as const).filter(([, v]) => v);
+      let visible = 0;
+      for (const li of items) {
+        const ok = active.every(([k, v]) => (li.dataset[k] ?? '').split('|').includes(v));
+        li.hidden = !ok;
+        if (ok) visible++;
+      }
+      resultado.textContent = `${visible} ${visible === 1 ? 'proyecto' : 'proyectos'}`;
+      vacia.classList.toggle('hidden', visible > 0);
+      if (updateUrl) {
+        const params = new URLSearchParams(active as [string, string][]);
+        history.replaceState(null, '', params.size ? `?${params}` : location.pathname);
+      }
+    };
+
+    // Estado inicial desde la URL (?revestimiento=Gresite&elemento=…)
+    const params = new URLSearchParams(location.search);
+    for (const k of keys) {
+      const v = params.get(k);
+      const input = v ? form.querySelector<HTMLInputElement>(`input[name="${k}"][value="${CSS.escape(v)}"]`) : null;
+      if (input) input.checked = true;
+    }
+    apply(false);
+
+    form.addEventListener('change', () => apply());
+    form.addEventListener('reset', () => setTimeout(() => apply(), 0));
+  }
+</script>

@@ -1,0 +1,142 @@
+---
+/**
+ * Ficha de proyecto. Solo se genera para obras con municipio informado
+ * (ver hasFicha en src/lib/proyectos.ts), para no publicar páginas vacías.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { Picture, getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import BeforeAfter from '@/components/ui/BeforeAfter.astro';
+import ProjectCard from '@/components/ui/ProjectCard.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, imageObjectSchema, type Crumb } from '@/lib/schema';
+import { getProyectos, hasFicha } from '@/lib/proyectos';
+
+export const getStaticPaths = (async () => {
+  const proyectos = await getProyectos();
+  return proyectos.filter(hasFicha).map((p) => ({ params: { slug: p.id }, props: { proyecto: p } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  proyecto: CollectionEntry<'proyectos'>;
+}
+const { proyecto } = Astro.props;
+const { data } = proyecto;
+const { Content } = await render(proyecto);
+const path = `/proyectos/${proyecto.id}/`;
+
+const servicios = await getCollection('servicios', (s) => (data.servicios as string[]).includes(s.id));
+const relacionados = (await getProyectos())
+  .filter((p) => p.id !== proyecto.id && p.data.servicios.some((s) => data.servicios.includes(s)))
+  .slice(0, 3);
+
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Proyectos', href: '/proyectos/' },
+  { name: data.title, href: path },
+];
+
+const fotos = [{ src: data.image, alt: data.imageAlt }, ...data.gallery];
+const fotosSchema = await Promise.all(
+  fotos.map(async (f) => {
+    const img = await getImage({ src: f.src, width: 1600, format: 'jpg' });
+    return imageObjectSchema({ contentUrl: new URL(img.src, Astro.site).href, caption: f.alt });
+  }),
+);
+
+const ficha = [
+  ['Municipio', data.municipio],
+  ['Tipo de obra', data.tipo],
+  ['Medidas', data.medidas],
+  ['Revestimiento', data.revestimiento],
+  ['Plazo de ejecución', data.plazo],
+].filter((r): r is [string, string] => Boolean(r[1]));
+
+const description = `${data.title} en ${data.municipio}. ${data.imageAlt}. Obra realizada por KS Piscinas.`.slice(0, 160);
+---
+
+<BaseLayout
+  title={`${data.title} en ${data.municipio} | KS Piscinas`}
+  description={description}
+  ogImage={data.image}
+  ogImageAlt={data.imageAlt}
+  schema={[breadcrumbSchema(crumbs), ...fotosSchema]}
+>
+  <PageHeader title={data.title} eyebrow={data.municipio} crumbs={crumbs} image={data.image} imageAlt={data.imageAlt} />
+
+  <section class="py-16 lg:py-24" aria-label="Detalles de la obra">
+    <div class="container-ks grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div>
+        {data.antes && <BeforeAfter before={data.antes} after={{ src: data.image, alt: data.imageAlt }} />}
+        <div class="prose-ks mt-10">
+          <Content />
+        </div>
+        {
+          data.gallery.length > 0 && (
+            <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+              {data.gallery.map(async (g) => {
+                const full = await getImage({ src: g.src, width: 1600, format: 'webp' });
+                return (
+                  <li>
+                    <a href={full.src} data-lightbox data-alt={g.alt} data-caption={g.alt} class="block overflow-hidden rounded-[var(--radius-card)]">
+                      <Picture src={g.src} formats={['avif', 'webp']} widths={[400, 700]} sizes="(min-width: 1024px) 400px, 92vw" alt={g.alt} class="aspect-[4/3] w-full object-cover" />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )
+        }
+      </div>
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <dl class="divide-y divide-linea rounded-[var(--radius-card)] bg-espuma px-7 py-3 ring-1 ring-linea">
+          {
+            ficha.map(([k, v]) => (
+              <div class="flex justify-between gap-4 py-3">
+                <dt class="text-piedra">{k}</dt>
+                <dd class="text-right font-display font-semibold text-marino">{v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        {
+          servicios.length > 0 && (
+            <ul class="mt-6 space-y-2">
+              {servicios.map((s) => (
+                <li>
+                  <a href={`/servicios/${s.id}/`} class="inline-flex items-center gap-2">
+                    {s.data.navLabel} <Icon name="arrow" size={16} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        <a href="/presupuesto/" class="btn btn-cta mt-6 w-full">Quiero una piscina así</a>
+      </aside>
+    </div>
+  </section>
+
+  {
+    relacionados.length > 0 && (
+      <section aria-labelledby="relacionados" class="bg-arena py-16 lg:py-24">
+        <div class="container-ks">
+          <h2 id="relacionados" class="text-3xl font-semibold">Proyectos similares</h2>
+          <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {relacionados.map((p) => (
+              <li>
+                <ProjectCard proyecto={p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+  <Lightbox />
+  <CtaContact />
+</BaseLayout>
