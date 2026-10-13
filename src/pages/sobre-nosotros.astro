@@ -1,0 +1,122 @@
+---
+/**
+ * Sobre nosotros. Solo contiene información que consta en la web anterior y en
+ * el perfil público de Instagram.
+ * [PENDIENTE] historia de la empresa, año de inicio, equipo (nombres y fotos con
+ * permiso), número de obras y garantías: añadir cuando KS los aporte.
+ */
+import { Picture } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import Icon, { type IconName } from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, BUSINESS_ID, type Crumb } from '@/lib/schema';
+import { site } from '@/config/site';
+import cabecera from '@/assets/obras/piscina-porcelanico-beige.jpg';
+import foto1 from '@/assets/obras/piscina-gresite-verde-gris-banco.jpg';
+import foto2 from '@/assets/obras/vaso-gresite-escalera-esquina.jpg';
+import foto3 from '@/assets/obras/piscina-escalera-coronacion-travertino.jpg';
+
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Sobre nosotros', href: '/sobre-nosotros/' },
+];
+
+const principios: { icon: IconName; title: string; text: string }[] = [
+  { icon: 'sparkle', title: 'El detalle importa', text: 'Cuidamos los trabajos hasta el mínimo detalle: juntas, escaleras, esquinas y coronación.' },
+  { icon: 'drop', title: 'Especialistas en obra', text: 'Nos dedicamos a las piscinas de hormigón gunitado, revestidas de gresite o porcelánico.' },
+  { icon: 'handshake', title: 'Trato cercano', text: 'Te atendemos de forma directa y cercana, antes, durante y después de la obra.' },
+  { icon: 'shield', title: 'Para que dure', text: 'Trabajamos con las máximas garantías para que tu piscina se disfrute muchos veranos.' },
+];
+---
+
+<BaseLayout
+  title="Quiénes somos: piscinas de obra en Madrid | KS Piscinas"
+  description="KS Piscinas: profesionales de la construcción y rehabilitación de piscinas de obra en Madrid. Conoce cómo trabajamos y qué nos diferencia."
+  ogImage={cabecera}
+  ogImageAlt="Piscina con revestimiento porcelánico beige construida por KS Piscinas"
+  schema={[breadcrumbSchema(crumbs), { '@type': 'AboutPage', url: `${site.url}/sobre-nosotros/`, about: { '@id': BUSINESS_ID } }]}
+>
+  <PageHeader
+    title="Somos KS Piscinas"
+    eyebrow="Sobre nosotros"
+    crumbs={crumbs}
+    image={cabecera}
+    imageAlt="Piscina revestida de porcelánico beige con coronación a juego junto a una vivienda"
+  >
+    Profesionales de la construcción y rehabilitación de piscinas en Madrid.
+  </PageHeader>
+
+  <section aria-labelledby="quienes-titulo" class="py-20 lg:py-28">
+    <div class="container-ks grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+      <div data-reveal>
+        <p class="eyebrow">Quiénes somos</p>
+        <h2 id="quienes-titulo" class="mt-3 text-3xl font-semibold sm:text-4xl">Construimos tu sueño</h2>
+        <div class="prose-ks mt-6 text-piedra">
+          <p>
+            En <strong>KS Piscinas</strong> nos dedicamos a construir y rehabilitar piscinas de obra en Madrid. Somos
+            especialistas en piscinas de <strong>hormigón proyectado (gunitado)</strong>, con perfecta estanqueidad y
+            revestidas con <strong>gresite o porcelánico</strong>.
+          </p>
+          <p>
+            Además de construir piscinas nuevas, reformamos las que ya existen, las personalizamos con equipamiento a
+            medida y diseñamos el espacio exterior que las rodea, para que el resultado sea un conjunto.
+          </p>
+          <p>
+            Y hay algo que nos importa especialmente: <strong>no desaparecemos al terminar la obra</strong>. Puedes
+            contactarnos en cualquier momento.
+          </p>
+        </div>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/servicios/" class="btn btn-primario">Nuestros servicios <Icon name="arrow" size={18} /></a>
+          <a href="/proyectos/" class="btn btn-borde">Ver proyectos</a>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4" data-reveal>
+        <Picture src={foto1} formats={['avif', 'webp']} widths={[320, 560]} sizes="(min-width: 1024px) 290px, 46vw" alt="Piscina con gresite gris verdoso y banco de obra sumergido" class="col-span-2 aspect-[16/9] w-full rounded-[var(--radius-card)] object-cover" />
+        <Picture src={foto2} formats={['avif', 'webp']} widths={[320, 560]} sizes="(min-width: 1024px) 290px, 46vw" alt="Vaso de piscina con gresite azul claro y escalera de obra antes del llenado" class="aspect-square w-full rounded-[var(--radius-card)] object-cover" />
+        <Picture src={foto3} formats={['avif', 'webp']} widths={[320, 560]} sizes="(min-width: 1024px) 290px, 46vw" alt="Escalera de obra en gresite y coronación de travertino" class="aspect-square w-full rounded-[var(--radius-card)] object-cover" />
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="principios-titulo" class="bg-arena py-20 lg:py-28">
+    <div class="container-ks">
+      <h2 id="principios-titulo" class="max-w-2xl text-3xl font-semibold sm:text-4xl" data-reveal>Cómo entendemos nuestro trabajo</h2>
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          principios.map((p, i) => (
+            <li class="rounded-[var(--radius-card)] bg-white p-7 shadow-card ring-1 ring-linea" data-reveal style={`--reveal-delay:${i}`}>
+              <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-espuma text-azul-texto">
+                <Icon name={p.icon} size={24} />
+              </span>
+              <h3 class="mt-5 text-xl font-semibold">{p.title}</h3>
+              <p class="mt-2 text-piedra">{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="instagram-titulo" class="py-20 lg:py-24">
+    <div class="container-ks">
+      <div class="flex flex-col items-start justify-between gap-8 rounded-[2rem] bg-espuma p-8 sm:p-12 lg:flex-row lg:items-center" data-reveal>
+        <div class="max-w-2xl">
+          <p class="eyebrow">En obra, día a día</p>
+          <h2 id="instagram-titulo" class="mt-3 text-3xl font-semibold">Síguenos en Instagram</h2>
+          <p class="mt-4 text-lg text-piedra">
+            En {site.social.instagramHandle} enseñamos nuestras obras en proceso: excavaciones, gunitado,
+            revestimientos, piscinas desbordantes y rehabilitaciones.
+          </p>
+        </div>
+        <a href={site.social.instagram} rel="noopener" target="_blank" class="btn btn-primario shrink-0">
+          <Icon name="instagram" size={20} />
+          {site.social.instagramHandle}<span class="sr-only"> en Instagram (se abre en una ventana nueva)</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaContact />
+</BaseLayout>
