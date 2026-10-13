@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+
+/* ─── Fuentes autoalojadas (variables, subconjunto latino) ─── */
+@font-face {
+  font-family: 'Sora';
+  src: url('/fonts/sora-latin-var.woff2') format('woff2-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-var.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* Fallbacks métricamente ajustados para minimizar CLS durante el swap. */
+@font-face {
+  font-family: 'Sora Fallback';
+  src: local('Arial');
+  size-adjust: 108%;
+  ascent-override: 94%;
+  descent-override: 26%;
+}
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+}
+
+/* ─── Tokens de diseño ───
+   Colores derivados del logo (marino #1F2B78, azul #009CE0, cielo #84CCF2).
+   Contrastes AA verificados: ver docs/sistema-de-diseno.md */
+@theme {
+  --color-noche: #13184a;
+  --color-marino: #1f2b78;
+  --color-azul: #009ce0; /* solo decorativo o texto grande / sobre fondo oscuro */
+  --color-azul-texto: #00679a; /* enlaces sobre blanco: 6.2:1 */
+  --color-cielo: #84ccf2;
+  --color-espuma: #eaf6fd;
+  --color-arena: #f6f2ec;
+  --color-tinta: #131b33;
+  --color-piedra: #5a6273;
+  --color-coral: #c2410c; /* solo CTA de presupuesto, texto blanco: 5.2:1 */
+  --color-coral-oscuro: #9a3412;
+  --color-linea: #dde3ea;
+
+  --font-display: 'Sora', 'Sora Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+  --shadow-card: 0 1px 2px rgb(19 24 74 / 0.06), 0 8px 24px -12px rgb(19 24 74 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(19 24 74 / 0.08), 0 20px 40px -16px rgb(19 24 74 / 0.3);
+
+  --ease-agua: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── Base ─── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-tinta antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-marino;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  a {
+    @apply text-azul-texto underline-offset-4;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-azul);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: var(--color-cielo);
+    color: var(--color-noche);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ─── Componentes ─── */
+@layer components {
+  .container-ks {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8;
+  }
+  .eyebrow {
+    @apply font-display text-sm font-semibold tracking-[0.14em] text-azul-texto uppercase;
+  }
+  .eyebrow-claro {
+    @apply font-display text-sm font-semibold tracking-[0.14em] text-cielo uppercase;
+  }
+
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-center sm:whitespace-nowrap font-display text-base font-semibold no-underline transition-[transform,background-color,box-shadow] duration-300;
+    transition-timing-function: var(--ease-agua);
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+  .btn-cta {
+    @apply bg-coral text-white shadow-card hover:bg-coral-oscuro;
+  }
+  .btn-primario {
+    @apply bg-marino text-white hover:bg-noche;
+  }
+  .btn-claro {
+    @apply bg-white/10 text-white ring-1 ring-white/60 backdrop-blur-sm hover:bg-white/20;
+  }
+  .btn-borde {
+    @apply bg-white text-marino ring-1 ring-marino/25 hover:ring-marino;
+  }
+
+  /* Motivo de marca: teselas de gresite (eco del logo). */
+  .teselas {
+    --t: 14px;
+    background-image:
+      linear-gradient(var(--color-azul) 0 0), linear-gradient(var(--color-cielo) 0 0),
+      linear-gradient(var(--color-marino) 0 0), linear-gradient(var(--color-cielo) 0 0);
+    background-size: var(--t) var(--t);
+    background-position:
+      0 0,
+      calc(var(--t) * 1.15) 0,
+      calc(var(--t) * 2.3) 0,
+      calc(var(--t) * 3.45) 0;
+    background-repeat: no-repeat;
+    width: calc(var(--t) * 4.45);
+    height: var(--t);
+  }
+}
+
+/* ─── Revelado al hacer scroll ───
+   El contenido es visible por defecto; solo se oculta si JS está activo
+   (clase .js en <html>) y el usuario no pide movimiento reducido. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.8s var(--ease-agua),
+      transform 0.8s var(--ease-agua);
+    transition-delay: calc(var(--reveal-delay, 0) * 90ms);
+  }
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}

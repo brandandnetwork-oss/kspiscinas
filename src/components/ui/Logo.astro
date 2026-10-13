@@ -1,0 +1,25 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/marca/logo-ks-piscinas.png';
+
+interface Props {
+  class?: string;
+  /** Altura visual en px (el ancho se calcula por proporción). */
+  height?: number;
+  eager?: boolean;
+}
+const { class: className, height = 44, eager = false } = Astro.props;
+const width = Math.round((logo.width / logo.height) * height);
+---
+
+<Image
+  src={logo}
+  alt="KS Piscinas"
+  width={width}
+  height={height}
+  densities={[1, 2]}
+  format="webp"
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+  class={className}
+/>

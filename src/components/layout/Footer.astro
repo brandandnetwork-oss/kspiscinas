@@ -1,0 +1,120 @@
+---
+import Logo from '@/components/ui/Logo.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { legalNav, mailHref, mainNav, site, telHref, whatsappHref } from '@/config/site';
+import { getCollection } from 'astro:content';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-noche text-white/85">
+  <div class="container-ks grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr] lg:py-20">
+    <div>
+      <a href="/" class="inline-block rounded-xl bg-white p-3" aria-label="KS Piscinas, ir al inicio">
+        <Logo height={56} class="h-14 w-auto" />
+      </a>
+      <p class="mt-6 max-w-xs text-[0.95rem] leading-relaxed text-white/75">
+        Construcción y reforma de piscinas de obra en {site.area.locality}. Hormigón gunitado, gresite
+        y porcelánico.
+      </p>
+      <div class="teselas mt-6" aria-hidden="true"></div>
+    </div>
+
+    <nav aria-labelledby="pie-servicios">
+      <h2 id="pie-servicios" class="font-display text-sm font-semibold tracking-[0.14em] text-cielo uppercase">
+        Servicios
+      </h2>
+      <ul class="mt-5 space-y-3">
+        {
+          servicios.map((s) => (
+            <li>
+              <a href={`/servicios/${s.id}/`} class="text-white/85 no-underline hover:text-white hover:underline">
+                {s.data.navLabel}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="pie-empresa">
+      <h2 id="pie-empresa" class="font-display text-sm font-semibold tracking-[0.14em] text-cielo uppercase">
+        Empresa
+      </h2>
+      <ul class="mt-5 space-y-3">
+        {
+          mainNav
+            .filter((i) => i.href !== '/servicios/')
+            .map((item) => (
+              <li>
+                <a href={item.href} class="text-white/85 no-underline hover:text-white hover:underline">
+                  {item.label}
+                </a>
+              </li>
+            ))
+        }
+        <li>
+          <a href="/preguntas-frecuentes/" class="text-white/85 no-underline hover:text-white hover:underline">
+            Preguntas frecuentes
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="font-display text-sm font-semibold tracking-[0.14em] text-cielo uppercase">Contacto</h2>
+      <ul class="mt-5 space-y-4">
+        <li>
+          <a href={telHref} class="flex items-center gap-3 text-white no-underline hover:underline">
+            <Icon name="phone" class="text-cielo" />
+            {site.phone.display}
+          </a>
+        </li>
+        <li>
+          <a href={whatsappHref} class="flex items-center gap-3 text-white no-underline hover:underline" rel="noopener" target="_blank">
+            <Icon name="whatsapp" class="text-cielo" />
+            WhatsApp<span class="sr-only"> (se abre en una ventana nueva)</span>
+          </a>
+        </li>
+        <li>
+          <a href={mailHref} class="flex items-center gap-3 break-all text-white no-underline hover:underline">
+            <Icon name="mail" class="shrink-0 text-cielo" />
+            {site.email}
+          </a>
+        </li>
+        <li class="flex items-center gap-3">
+          <Icon name="clock" class="text-cielo" />
+          {site.hours.display}
+        </li>
+        <li class="flex items-center gap-3">
+          <Icon name="pin" class="text-cielo" />
+          Trabajamos en {site.area.locality}
+        </li>
+        <li>
+          <a href={site.social.instagram} class="flex items-center gap-3 text-white no-underline hover:underline" rel="noopener" target="_blank">
+            <Icon name="instagram" class="text-cielo" />
+            {site.social.instagramHandle}<span class="sr-only"> en Instagram (se abre en una ventana nueva)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-ks flex flex-col gap-4 py-6 pb-24 text-sm text-white/65 md:flex-row md:items-center md:justify-between lg:pb-6">
+      <p>© {year} {site.name}. Todos los derechos reservados.</p>
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {
+          legalNav.map((item) => (
+            <li>
+              <a href={item.href} class="text-white/75 no-underline hover:text-white hover:underline">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,36 @@
+---
+/**
+ * Acordeón accesible con <details>/<summary> nativos: funciona con teclado y
+ * sin JavaScript, y todo el texto está en el HTML inicial.
+ */
+interface Props {
+  items: { question: string; answer: string }[];
+  /** Nivel del encabezado de cada pregunta. */
+  headingLevel?: 'h3' | 'h2';
+}
+const { items, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<div class="divide-y divide-linea rounded-[var(--radius-card)] bg-white ring-1 ring-linea">
+  {
+    items.map((item, i) => (
+      <details class="group" open={i === 0}>
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 rounded-[var(--radius-card)] px-6 py-5 [&::-webkit-details-marker]:hidden">
+          <Heading class="text-lg font-semibold">{item.question}</Heading>
+          <span
+            class="flex size-9 shrink-0 items-center justify-center rounded-full bg-espuma text-marino transition-transform duration-300 group-open:rotate-45"
+            aria-hidden="true"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </span>
+        </summary>
+        <div class="px-6 pb-6 text-piedra">
+          <p>{item.answer}</p>
+        </div>
+      </details>
+    ))
+  }
+</div>
