@@ -1,0 +1,54 @@
+---
+/**
+ * Casilla de consentimiento (sin premarcar) + información básica de protección
+ * de datos junto al botón de envío (RGPD art. 13, primera capa).
+ * Incluye también los campos antispam: honeypot y marca de tiempo.
+ */
+import { site } from '@/config/site';
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+---
+
+<!-- Antispam: campo trampa invisible para personas y marca de tiempo -->
+<div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+  <label for={`${id}-web`}>No rellenes este campo</label>
+  <input type="text" id={`${id}-web`} name="web" tabindex="-1" autocomplete="off" />
+</div>
+<input type="hidden" name="ts" value="" data-ts />
+
+<div class="rounded-xl bg-espuma p-4 text-sm text-piedra">
+  <p class="font-semibold text-marino">Información básica sobre protección de datos</p>
+  <dl class="mt-2 grid gap-x-3 gap-y-1 sm:grid-cols-[auto_1fr]">
+    <dt class="font-medium text-tinta">Responsable:</dt>
+    <dd>{site.name}{site.legalName.includes('PENDIENTE') ? '' : ` (${site.legalName})`}.</dd>
+    <dt class="font-medium text-tinta">Finalidad:</dt>
+    <dd>responder a tu solicitud de información o presupuesto.</dd>
+    <dt class="font-medium text-tinta">Legitimación:</dt>
+    <dd>tu consentimiento.</dd>
+    <dt class="font-medium text-tinta">Destinatarios:</dt>
+    <dd>no se cederán datos a terceros, salvo obligación legal.</dd>
+    <dt class="font-medium text-tinta">Derechos:</dt>
+    <dd>acceso, rectificación, supresión y otros, como se explica en la información adicional.</dd>
+    <dt class="font-medium text-tinta">Más información:</dt>
+    <dd><a href="/politica-de-privacidad/">Política de privacidad</a>.</dd>
+  </dl>
+</div>
+
+<div class="flex items-start gap-3">
+  <input
+    type="checkbox"
+    id={`${id}-privacidad`}
+    name="privacidad"
+    value="si"
+    required
+    class="mt-1 size-5 shrink-0 accent-marino"
+    aria-describedby={`${id}-privacidad-error`}
+  />
+  <label for={`${id}-privacidad`} class="text-[0.98rem]">
+    He leído y acepto la <a href="/politica-de-privacidad/">política de privacidad</a>. <span class="text-coral" aria-hidden="true">*</span>
+  </label>
+</div>
+<p id={`${id}-privacidad-error`} class="field-error hidden text-sm font-medium text-coral-oscuro" role="alert"></p>

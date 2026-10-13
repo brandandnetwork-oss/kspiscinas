@@ -1,0 +1,31 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { site, telHref, whatsappHref } from '@/config/site';
+---
+
+<BaseLayout
+  title="Solicitud recibida | KS Piscinas"
+  description="Hemos recibido tu mensaje. Te contestaremos lo antes posible."
+  noindex
+>
+  <section class="bg-espuma py-24 lg:py-32">
+    <div class="container-ks max-w-3xl text-center">
+      <span class="mx-auto flex size-16 items-center justify-center rounded-full bg-marino text-white">
+        <Icon name="check" size={32} />
+      </span>
+      <h1 class="mt-8 text-4xl font-semibold sm:text-5xl">¡Gracias! Hemos recibido tu solicitud</h1>
+      <p class="mt-6 text-lg text-piedra">
+        Te contestaremos lo antes posible, en horario de {site.hours.display.toLowerCase()}. Si es urgente,
+        llámanos o escríbenos por WhatsApp.
+      </p>
+      <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href={telHref} class="btn btn-primario"><Icon name="phone" size={18} /> {site.phone.display}</a>
+        <a href={whatsappHref} rel="noopener" target="_blank" class="btn btn-borde">
+          <Icon name="whatsapp" size={18} /> WhatsApp<span class="sr-only"> (se abre en una ventana nueva)</span>
+        </a>
+      </div>
+      <p class="mt-12 text-piedra">Mientras tanto, puedes ver <a href="/proyectos/">nuestros proyectos</a> o leer nuestras <a href="/blog/">guías</a>.</p>
+    </div>
+  </section>
+</BaseLayout>

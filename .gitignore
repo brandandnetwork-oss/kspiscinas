@@ -8,3 +8,4 @@ _import/
 .DS_Store
 Thumbs.db
 docs/lighthouse/*.json
+public/api/config.php

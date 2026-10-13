@@ -1,0 +1,327 @@
+---
+/**
+ * Configurador de presupuesto por pasos. Sin JS es un formulario normal con
+ * todos los bloques visibles; con JS se convierte en un asistente con barra de
+ * progreso, validación por paso y resumen en vivo.
+ *
+ * [PENDIENTE] horquilla de precio orientativa: requiere las tarifas de KS.
+ * Cuando existan, añadir el cálculo en `resumen()` y mostrarlo en el resumen.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import Field from '@/components/forms/Field.astro';
+import FormPrivacy from '@/components/forms/FormPrivacy.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, type Crumb } from '@/lib/schema';
+import { site, telHref, whatsappHref } from '@/config/site';
+
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Presupuesto', href: '/presupuesto/' },
+];
+
+const proyectos = [
+  { value: 'Piscina nueva', desc: 'Construcción de una piscina de obra' },
+  { value: 'Reforma', desc: 'Rehabilitar o renovar una piscina existente' },
+  { value: 'Equipamiento', desc: 'Iluminación, chorros, depuración…' },
+  { value: 'Exteriores', desc: 'Jardín, pavimentos, muros o césped' },
+];
+const formas = ['Rectangular', 'Rectangular con escalera o banco de obra', 'En L', 'Forma libre', 'Aún no lo sé'];
+const medidas = ['Pequeña (hasta 6 × 3 m)', 'Mediana (en torno a 8 × 4 m)', 'Grande (10 × 5 m o más)', 'Otra / aún no lo sé'];
+const revestimientos = ['Gresite', 'Porcelánico', 'Aún no lo sé'];
+const extras = [
+  'Iluminación LED',
+  'Chorros de pared',
+  'Cascada',
+  'Spa o jacuzzi',
+  'Bomba de velocidad variable',
+  'Desinfección y filtración',
+  'Cubierta',
+  'Jardín y pavimento exterior',
+  'Césped artificial',
+];
+const plazos = ['Lo antes posible', 'En los próximos 3 meses', 'En 3 a 6 meses', 'Solo estoy informándome'];
+// Compatible con el flag `v` que usan los navegadores para `pattern` (el guion va escapado).
+const telPattern = '^(\\+?34)?[\\s.\\-]?[6789](?:[\\s.\\-]?\\d){8}$';
+
+const pasos = ['Proyecto', 'Tu piscina', 'Extras', 'Tus datos'];
+---
+
+<BaseLayout
+  title="Pide presupuesto para tu piscina en Madrid | KS Piscinas"
+  description="Configura tu piscina en 4 pasos (tipo de obra, forma, medidas, revestimiento y extras) y recibe un presupuesto sin compromiso de KS Piscinas en Madrid."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHeader title="Pide presupuesto para tu piscina" eyebrow="Sin compromiso" crumbs={crumbs}>
+    Cuéntanos qué necesitas en cuatro pasos y te preparamos un presupuesto a medida. No es vinculante y
+    no tiene ningún coste.
+  </PageHeader>
+
+  <section aria-label="Configurador de presupuesto" class="py-14 lg:py-20">
+    <div class="container-ks grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:gap-14">
+      <form
+        id="presupuesto"
+        action="/api/enviar.php"
+        method="post"
+        class="relative rounded-[2rem] bg-white p-6 shadow-card ring-1 ring-linea sm:p-10"
+        aria-label="Solicitud de presupuesto"
+      >
+        <input type="hidden" name="tipo_formulario" value="presupuesto" />
+        <p id="presupuesto-alerta" class="mb-6 hidden rounded-xl bg-coral/10 p-4 font-medium text-coral-oscuro" role="alert"></p>
+
+        <!-- Progreso (solo con JS) -->
+        <div id="progreso" class="mb-10 hidden">
+          <p class="font-display text-sm font-semibold text-azul-texto" aria-live="polite">
+            Paso <span id="paso-actual">1</span> de {pasos.length}: <span id="paso-nombre">{pasos[0]}</span>
+          </p>
+          <ol class="mt-3 grid grid-cols-4 gap-2" aria-hidden="true">
+            {pasos.map((p) => (
+              <li class="paso-barra h-1.5 rounded-full bg-linea transition-colors duration-500" title={p}></li>
+            ))}
+          </ol>
+        </div>
+
+        <!-- Paso 1 -->
+        <fieldset class="paso space-y-5" data-paso="1">
+          <legend class="text-2xl font-semibold text-marino sm:text-3xl font-display">1. ¿Qué necesitas?</legend>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {
+              proyectos.map((p, i) => (
+                <label class="opcion">
+                  <input type="radio" name="proyecto" value={p.value} required={i === 0} class="sr-only" aria-describedby="proyecto-error" />
+                  <span class="opcion-caja">
+                    <span class="font-display text-lg font-semibold text-marino">{p.value}</span>
+                    <span class="mt-1 block text-sm text-piedra">{p.desc}</span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+          <p id="proyecto-error" class="field-error hidden text-sm font-medium text-coral-oscuro" role="alert"></p>
+        </fieldset>
+
+        <!-- Paso 2 -->
+        <fieldset class="paso mt-12 space-y-8" data-paso="2">
+          <legend class="text-2xl font-semibold text-marino sm:text-3xl font-display">2. Tu piscina</legend>
+          <p class="text-piedra">Si aún no lo tienes claro, elige «Aún no lo sé»: lo vemos juntos en la visita.</p>
+
+          <div role="radiogroup" aria-labelledby="forma-titulo">
+            <p id="forma-titulo" class="font-display font-semibold text-marino">Forma</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {formas.map((f) => (
+                <label class="chip"><input type="radio" name="forma" value={f} class="sr-only" /><span>{f}</span></label>
+              ))}
+            </div>
+          </div>
+
+          <div role="radiogroup" aria-labelledby="medidas-titulo">
+            <p id="medidas-titulo" class="font-display font-semibold text-marino">Tamaño aproximado</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {medidas.map((m) => (
+                <label class="chip"><input type="radio" name="medidas" value={m} class="sr-only" /><span>{m}</span></label>
+              ))}
+            </div>
+          </div>
+
+          <div role="radiogroup" aria-labelledby="revestimiento-titulo">
+            <p id="revestimiento-titulo" class="font-display font-semibold text-marino">Revestimiento</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {revestimientos.map((r) => (
+                <label class="chip"><input type="radio" name="revestimiento" value={r} class="sr-only" /><span>{r}</span></label>
+              ))}
+            </div>
+            <p class="mt-3 text-sm text-piedra">
+              ¿Dudas? Lee <a href="/blog/gresite-o-porcelanico-piscina/" target="_blank">gresite o porcelánico<span class="sr-only"> (se abre en una ventana nueva)</span></a>.
+            </p>
+          </div>
+        </fieldset>
+
+        <!-- Paso 3 -->
+        <fieldset class="paso mt-12 space-y-5" data-paso="3">
+          <legend class="text-2xl font-semibold text-marino sm:text-3xl font-display">3. Extras</legend>
+          <p class="text-piedra">Marca lo que te interese (opcional).</p>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {
+              extras.map((x) => (
+                <label class="flex cursor-pointer items-center gap-3 rounded-xl px-4 py-3 ring-1 ring-linea transition-colors hover:bg-espuma has-[:checked]:bg-espuma has-[:checked]:ring-marino">
+                  <input type="checkbox" name="extras[]" value={x} class="size-5 accent-marino" />
+                  <span>{x}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <!-- Paso 4 -->
+        <fieldset class="paso mt-12 space-y-6" data-paso="4">
+          <legend class="text-2xl font-semibold text-marino sm:text-3xl font-display">4. Tus datos</legend>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <Field id="p-nombre" name="nombre" label="Nombre" required autocomplete="name" minlength={2} />
+            <Field id="p-telefono" name="telefono" label="Teléfono" type="tel" required autocomplete="tel" inputmode="tel" pattern={telPattern} />
+          </div>
+          <Field id="p-email" name="email" label="Email" type="email" required autocomplete="email" />
+          <div class="grid gap-6 sm:grid-cols-2">
+            <Field id="p-zona" name="zona" label="Localidad de la obra" autocomplete="address-level2" placeholder="Ej.: Madrid" />
+            <Field id="p-plazo" name="plazo" label="¿Cuándo te gustaría empezar?" as="select" options={plazos} />
+          </div>
+          <Field id="p-mensaje" name="mensaje" label="Cuéntanos más" as="textarea" placeholder="Medidas del terreno, ideas, fotos que puedas enviarnos por WhatsApp…" />
+
+          <FormPrivacy id="p" />
+        </fieldset>
+
+        <!-- Navegación -->
+        <div class="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-linea pt-6">
+          <button type="button" id="atras" class="btn btn-borde hidden">
+            <Icon name="arrow" size={18} class="rotate-180" /> Atrás
+          </button>
+          <button type="button" id="siguiente" class="btn btn-primario ml-auto hidden">
+            Siguiente <Icon name="arrow" size={18} />
+          </button>
+          <button type="submit" id="enviar" class="btn btn-cta ml-auto text-lg">
+            Enviar solicitud <Icon name="arrow" size={20} />
+          </button>
+        </div>
+      </form>
+
+      <aside aria-labelledby="resumen-titulo" class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-[var(--radius-card)] bg-marino p-7 text-white">
+          <h2 id="resumen-titulo" class="text-xl font-semibold !text-white">Tu solicitud</h2>
+          <dl id="resumen" class="mt-5 space-y-3 text-[0.98rem]" aria-live="polite">
+            <div><dt class="text-sm text-cielo">Proyecto</dt><dd data-r="proyecto">—</dd></div>
+            <div><dt class="text-sm text-cielo">Forma</dt><dd data-r="forma">—</dd></div>
+            <div><dt class="text-sm text-cielo">Tamaño</dt><dd data-r="medidas">—</dd></div>
+            <div><dt class="text-sm text-cielo">Revestimiento</dt><dd data-r="revestimiento">—</dd></div>
+            <div><dt class="text-sm text-cielo">Extras</dt><dd data-r="extras">—</dd></div>
+          </dl>
+          <p class="mt-6 border-t border-white/15 pt-5 text-sm text-white/80">
+            Con estos datos te preparamos un presupuesto sin compromiso. El precio final depende del terreno
+            y de los acabados, por eso lo ajustamos tras la visita.
+          </p>
+        </div>
+        <div class="mt-5 rounded-[var(--radius-card)] bg-espuma p-6">
+          <p class="font-display font-semibold text-marino">¿Prefieres hablar?</p>
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <a href={telHref} class="btn btn-borde !px-3 text-sm"><Icon name="phone" size={16} /> Llamar</a>
+            <a href={whatsappHref} rel="noopener" target="_blank" class="btn btn-borde !px-3 text-sm"><Icon name="whatsapp" size={16} /> WhatsApp<span class="sr-only"> (se abre en una ventana nueva)</span></a>
+          </div>
+          <p class="mt-4 text-sm text-piedra">{site.hours.display}</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .opcion {
+    display: block;
+    cursor: pointer;
+  }
+  .opcion-caja {
+    display: block;
+    height: 100%;
+    border-radius: 1rem;
+    padding: 1.1rem 1.25rem;
+    box-shadow: inset 0 0 0 1px var(--color-linea);
+    transition: box-shadow 0.2s, background-color 0.2s;
+  }
+  .opcion:hover .opcion-caja {
+    box-shadow: inset 0 0 0 1px var(--color-marino);
+  }
+  .opcion input:checked + .opcion-caja {
+    background: var(--color-espuma);
+    box-shadow: inset 0 0 0 2px var(--color-marino);
+  }
+  .opcion input:focus-visible + .opcion-caja,
+  .chip input:focus-visible + span {
+    outline: 3px solid var(--color-azul);
+    outline-offset: 2px;
+  }
+  .chip {
+    display: inline-flex;
+    cursor: pointer;
+  }
+  .chip span {
+    border-radius: 999px;
+    background: white;
+    padding: 0.55rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-marino);
+    box-shadow: inset 0 0 0 1px var(--color-linea);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .chip:hover span {
+    box-shadow: inset 0 0 0 1px var(--color-marino);
+  }
+  .chip input:checked + span {
+    background: var(--color-marino);
+    color: white;
+  }
+  .paso-barra.activa {
+    background: var(--color-azul);
+  }
+</style>
+
+<script>
+  import { avisoErrorServidor, prepararFormulario, validar } from '@/scripts/forms';
+
+  const form = document.getElementById('presupuesto') as HTMLFormElement | null;
+  avisoErrorServidor(document.getElementById('presupuesto-alerta'));
+
+  if (form) {
+    prepararFormulario(form);
+    const pasos = [...form.querySelectorAll<HTMLFieldSetElement>('.paso')];
+    const nombres = ['Proyecto', 'Tu piscina', 'Extras', 'Tus datos'];
+    const atras = document.getElementById('atras')!;
+    const siguiente = document.getElementById('siguiente')!;
+    const enviar = document.getElementById('enviar')!;
+    const barras = [...document.querySelectorAll<HTMLElement>('.paso-barra')];
+    let actual = 0;
+
+    document.getElementById('progreso')?.classList.remove('hidden');
+    pasos.forEach((p) => p.classList.remove('mt-12'));
+
+    const ir = (n: number, foco = true) => {
+      actual = n;
+      pasos.forEach((p, i) => (p.hidden = i !== n));
+      barras.forEach((b, i) => b.classList.toggle('activa', i <= n));
+      atras.classList.toggle('hidden', n === 0);
+      siguiente.classList.toggle('hidden', n === pasos.length - 1);
+      enviar.classList.toggle('hidden', n !== pasos.length - 1);
+      document.getElementById('paso-actual')!.textContent = String(n + 1);
+      document.getElementById('paso-nombre')!.textContent = nombres[n]!;
+      if (foco) {
+        const legend = pasos[n]!.querySelector('legend');
+        legend?.setAttribute('tabindex', '-1');
+        (legend as HTMLElement | null)?.focus();
+        form.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      }
+    };
+
+    siguiente.addEventListener('click', () => {
+      if (validar(pasos[actual]!)) ir(actual + 1);
+    });
+    atras.addEventListener('click', () => ir(actual - 1));
+
+    // Resumen en vivo
+    const resumen = () => {
+      const data = new FormData(form);
+      const set = (k: string, v: string) => {
+        const dd = document.querySelector(`[data-r="${k}"]`);
+        if (dd) dd.textContent = v || '—';
+      };
+      for (const k of ['proyecto', 'forma', 'medidas', 'revestimiento']) set(k, String(data.get(k) ?? ''));
+      set('extras', data.getAll('extras[]').join(', '));
+    };
+    form.addEventListener('change', resumen);
+
+    // Preselección desde la URL: /presupuesto/?proyecto=Reforma
+    const pre = new URLSearchParams(location.search).get('proyecto');
+    if (pre) {
+      const input = form.querySelector<HTMLInputElement>(`input[name="proyecto"][value="${CSS.escape(pre)}"]`);
+      if (input) input.checked = true;
+    }
+    resumen();
+    ir(0, false);
+  }
+</script>

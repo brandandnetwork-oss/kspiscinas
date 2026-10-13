@@ -1,0 +1,141 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import Field from '@/components/forms/Field.astro';
+import FormPrivacy from '@/components/forms/FormPrivacy.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, BUSINESS_ID, type Crumb } from '@/lib/schema';
+import { mailHref, site, telHref, whatsappHref } from '@/config/site';
+
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Contacto', href: '/contacto/' },
+];
+// Compatible con el flag `v` que usan los navegadores para `pattern` (el guion va escapado).
+const telPattern = '^(\\+?34)?[\\s.\\-]?[6789](?:[\\s.\\-]?\\d){8}$';
+---
+
+<BaseLayout
+  title="Contacto: piscinas de obra en Madrid | KS Piscinas"
+  description={`Contacta con KS Piscinas: llámanos al ${site.phone.display}, escríbenos por WhatsApp o email. Atendemos de lunes a sábado de 9:00 a 20:00 en Madrid.`}
+  schema={[breadcrumbSchema(crumbs), { '@type': 'ContactPage', url: `${site.url}/contacto/`, about: { '@id': BUSINESS_ID } }]}
+>
+  <PageHeader title="Contacta con nosotros" eyebrow="Contacto" crumbs={crumbs}>
+    Llámanos, escríbenos por WhatsApp o déjanos un mensaje. Te respondemos lo antes posible.
+  </PageHeader>
+
+  <section aria-label="Formas de contacto" class="py-16 lg:py-24">
+    <div class="container-ks grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
+      <div>
+        <h2 class="text-2xl font-semibold sm:text-3xl">Hablemos de tu piscina</h2>
+        <ul class="mt-8 space-y-4">
+          <li>
+            <a href={telHref} class="group flex items-center gap-5 rounded-[var(--radius-card)] bg-white p-5 no-underline shadow-card ring-1 ring-linea transition-shadow hover:shadow-lift">
+              <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-espuma text-azul-texto"><Icon name="phone" size={24} /></span>
+              <span>
+                <span class="block text-sm text-piedra">Teléfono</span>
+                <span class="font-display text-lg font-semibold text-marino">{site.phone.display}</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href={whatsappHref} rel="noopener" target="_blank" class="group flex items-center gap-5 rounded-[var(--radius-card)] bg-white p-5 no-underline shadow-card ring-1 ring-linea transition-shadow hover:shadow-lift">
+              <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-espuma text-azul-texto"><Icon name="whatsapp" size={24} /></span>
+              <span>
+                <span class="block text-sm text-piedra">WhatsApp</span>
+                <span class="font-display text-lg font-semibold text-marino">Escríbenos<span class="sr-only"> (se abre en una ventana nueva)</span></span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href={mailHref} class="group flex items-center gap-5 rounded-[var(--radius-card)] bg-white p-5 no-underline shadow-card ring-1 ring-linea transition-shadow hover:shadow-lift">
+              <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-espuma text-azul-texto"><Icon name="mail" size={24} /></span>
+              <span class="min-w-0">
+                <span class="block text-sm text-piedra">Email</span>
+                <span class="block font-display text-lg font-semibold break-all text-marino">{site.email}</span>
+              </span>
+            </a>
+          </li>
+          <li class="flex items-center gap-5 rounded-[var(--radius-card)] bg-espuma p-5">
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white text-azul-texto"><Icon name="clock" size={24} /></span>
+            <span>
+              <span class="block text-sm text-piedra">Horario</span>
+              <span class="font-display text-lg font-semibold text-marino">{site.hours.display}</span>
+            </span>
+          </li>
+          <li class="flex items-center gap-5 rounded-[var(--radius-card)] bg-espuma p-5">
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white text-azul-texto"><Icon name="pin" size={24} /></span>
+            <span>
+              <span class="block text-sm text-piedra">Zona de trabajo</span>
+              <span class="font-display text-lg font-semibold text-marino">{site.area.locality}</span>
+            </span>
+          </li>
+        </ul>
+
+        <!-- Mapa bajo demanda: no se carga nada de terceros hasta que se pulsa -->
+        <div class="mt-8 overflow-hidden rounded-[var(--radius-card)] ring-1 ring-linea">
+          <div id="mapa" class="relative flex aspect-[4/3] items-center justify-center bg-[radial-gradient(circle_at_50%_45%,var(--color-cielo)_0,var(--color-espuma)_55%)]">
+            <div class="text-center">
+              <Icon name="pin" size={36} class="mx-auto text-marino" />
+              <p class="mt-2 font-display font-semibold text-marino">Trabajamos en {site.area.locality}</p>
+              <button type="button" id="mapa-cargar" class="btn btn-borde mt-4 !min-h-10 !py-2 text-sm">Ver mapa</button>
+              <p class="mx-auto mt-3 max-w-xs px-4 text-xs text-piedra">Al pulsar se cargará un mapa de OpenStreetMap.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <form
+          id="form-contacto"
+          action="/api/enviar.php"
+          method="post"
+          class="relative space-y-6 rounded-[2rem] bg-white p-6 shadow-card ring-1 ring-linea sm:p-10"
+          aria-labelledby="form-contacto-titulo"
+        >
+          <h2 id="form-contacto-titulo" class="text-2xl font-semibold sm:text-3xl">Envíanos un mensaje</h2>
+          <p id="form-contacto-alerta" class="hidden rounded-xl bg-coral/10 p-4 font-medium text-coral-oscuro" role="alert"></p>
+          <input type="hidden" name="tipo_formulario" value="contacto" />
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <Field id="c-nombre" name="nombre" label="Nombre" required autocomplete="name" minlength={2} />
+            <Field id="c-telefono" name="telefono" label="Teléfono" type="tel" required autocomplete="tel" inputmode="tel" pattern={telPattern} />
+          </div>
+          <Field id="c-email" name="email" label="Email" type="email" required autocomplete="email" />
+          <Field id="c-mensaje" name="mensaje" label="¿En qué podemos ayudarte?" as="textarea" required minlength={10} />
+
+          <FormPrivacy id="c" />
+
+          <button type="submit" class="btn btn-cta w-full text-lg sm:w-auto">
+            Enviar mensaje
+            <Icon name="arrow" size={20} />
+          </button>
+          <p class="text-sm text-piedra">
+            ¿Prefieres darnos más detalles? Usa el <a href="/presupuesto/">formulario de presupuesto</a>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { avisoErrorServidor, prepararFormulario } from '@/scripts/forms';
+
+  const form = document.getElementById('form-contacto') as HTMLFormElement | null;
+  if (form) prepararFormulario(form);
+  avisoErrorServidor(document.getElementById('form-contacto-alerta'));
+
+  document.getElementById('mapa-cargar')?.addEventListener('click', () => {
+    const mapa = document.getElementById('mapa');
+    if (!mapa) return;
+    const iframe = document.createElement('iframe');
+    iframe.title = 'Mapa de Madrid, zona de trabajo de KS Piscinas';
+    iframe.loading = 'lazy';
+    iframe.referrerPolicy = 'no-referrer';
+    iframe.src = 'https://www.openstreetmap.org/export/embed.html?bbox=-3.95%2C40.30%2C-3.50%2C40.56&layer=mapnik';
+    iframe.className = 'absolute inset-0 h-full w-full border-0';
+    mapa.replaceChildren(iframe);
+    iframe.focus();
+  });
+</script>
