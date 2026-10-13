@@ -13,14 +13,22 @@ highlights:
   - Filtración y desinfección
 ---
 
-Personalizamos y automatizamos tu piscina con:
+**Personalizamos y automatizamos tu piscina** para que sea más cómoda, más eficiente y más bonita, tanto si es nueva como si ya la tienes.
 
-- Chorros de pared
-- Cascadas con o sin obra
-- Spas y jacuzzis
-- Iluminación LED
-- Sistemas de desinfección y filtración
-- Cubiertas alrededor de la piscina
-- Bombas de velocidad variable
-- Rocas y elementos paisajísticos
-- Mantenimiento químico del agua
+## Equipamiento que instalamos
+
+- **Iluminación LED**: transforma la piscina por la noche y consume menos que la iluminación tradicional.
+- **Chorros de pared**.
+- **Cascadas**, con o sin obra.
+- **Spas y jacuzzis**.
+- **Sistemas de desinfección y filtración** del agua.
+- **Bombas de velocidad variable**: ajustan su velocidad a cada momento (filtrado, limpieza…) en lugar de funcionar siempre a máxima potencia, lo que ayuda a reducir el consumo eléctrico y el ruido.
+- **Cubiertas** alrededor de la piscina.
+- **Rocas y elementos paisajísticos**.
+- **Mantenimiento químico del agua**.
+
+## Una piscina a tu medida
+
+Cada familia usa la piscina de una forma: hay quien quiere nadar, quien busca relajarse en un banco con chorros o quien la disfruta sobre todo de noche. Te asesoramos para elegir el equipamiento que de verdad vas a aprovechar.
+
+Todo esto se puede incluir al [construir una piscina nueva](/servicios/construccion-de-piscinas/) o al [reformar la que ya tienes](/servicios/reforma-de-piscinas/).

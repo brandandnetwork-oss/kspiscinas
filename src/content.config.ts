@@ -41,4 +41,51 @@ const faq = defineCollection({
   }),
 });
 
-export const collections = { servicios, faq };
+/** Obras. La ficha individual solo se publica si la obra tiene municipio. */
+const proyectos = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/proyectos' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      image: image(),
+      imageAlt: z.string(),
+      /** Fotos adicionales (proceso de obra, detalles, antes/después). */
+      gallery: z.array(z.object({ src: image(), alt: z.string() })).default([]),
+      /** Antes/después para reformas: activa el comparador deslizante. */
+      antes: z.object({ src: image(), alt: z.string() }).optional(),
+      /** Tipo de obra. [PENDIENTE] confirmar en las obras importadas de la web anterior. */
+      tipo: z.enum(['Obra nueva', 'Reforma']).optional(),
+      /** Servicios relacionados (slugs) para el enlazado interno. */
+      servicios: z
+        .array(z.enum(['construccion-de-piscinas', 'reforma-de-piscinas', 'equipamiento-e-iluminacion', 'exteriores-y-jardin']))
+        .default([]),
+      revestimiento: z.enum(['Gresite', 'Porcelánico']).optional(),
+      elementos: z.array(z.string()).default([]),
+      /** [PENDIENTE] datos que KS debe aportar para publicar la ficha. */
+      municipio: z.string().optional(),
+      medidas: z.string().optional(),
+      plazo: z.string().optional(),
+      fecha: z.coerce.date().optional(),
+      destacado: z.boolean().default(false),
+      order: z.number().default(100),
+    }),
+});
+
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      seoTitle: z.string().max(65),
+      description: z.string().max(170),
+      image: image(),
+      imageAlt: z.string(),
+      datePublished: z.coerce.date(),
+      dateModified: z.coerce.date().optional(),
+      /** Servicios relacionados para el enlazado interno. */
+      servicios: z.array(z.string()).default([]),
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { servicios, faq, proyectos, blog };

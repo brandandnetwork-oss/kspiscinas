@@ -8,7 +8,6 @@ import WorksGallery from '@/components/home/WorksGallery.astro';
 import ProcessPreview from '@/components/home/ProcessPreview.astro';
 import FaqPreview from '@/components/home/FaqPreview.astro';
 import CtaContact from '@/components/ui/CtaContact.astro';
-import { faqSchema } from '@/lib/schema';
 
 const faqs = (await getCollection('faq', (f) => f.data.showOn.includes('home')))
   .sort((a, b) => a.data.order - b.data.order)
@@ -18,7 +17,6 @@ const faqs = (await getCollection('faq', (f) => f.data.showOn.includes('home')))
 <BaseLayout
   title="Construcción y reforma de piscinas en Madrid | KS Piscinas"
   description="Construimos y reformamos piscinas de obra en Madrid: hormigón gunitado, gresite y porcelánico, iluminación LED y exteriores. Pide presupuesto sin compromiso."
-  schema={[faqSchema(faqs)]}
 >
   <Hero />
   <ServicesGrid />

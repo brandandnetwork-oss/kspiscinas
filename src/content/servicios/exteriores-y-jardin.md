@@ -13,9 +13,15 @@ highlights:
   - Césped artificial
 ---
 
-No tienes por qué conformarte con un espacio exterior cualquiera cuando puedes tener un espacio espectacular. Evaluamos tu espacio y te proponemos soluciones adaptadas a tu presupuesto:
+**No tienes por qué conformarte con un espacio exterior cualquiera cuando puedes tener un espacio espectacular.** La piscina luce de verdad cuando el entorno está a su altura.
 
-- Diseño y recreación del jardín
-- Construcción de muros
-- Alicatado y pavimentos de exterior
-- Instalación de césped artificial
+Evaluamos tu espacio y te proponemos **soluciones adaptadas a tu presupuesto**:
+
+- **Diseño y recreación del jardín** alrededor de la piscina.
+- **Construcción de muros**.
+- **Alicatado y pavimentos de exterior**: coronaciones y solados en piedra, porcelánico y otros materiales.
+- **Instalación de césped artificial**.
+
+## Piscina y exterior, un solo proyecto
+
+Cuando la piscina y su entorno se diseñan juntos, los materiales, los niveles y los acabados encajan desde el principio. Por eso podemos encargarnos de las dos cosas: [construir la piscina](/servicios/construccion-de-piscinas/) y dejar terminado el espacio que la rodea, con un único interlocutor.

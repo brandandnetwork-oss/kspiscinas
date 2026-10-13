@@ -1,0 +1,185 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import FaqAccordion from '@/components/ui/FaqAccordion.astro';
+import ProjectCard from '@/components/ui/ProjectCard.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, serviceSchema, type Crumb } from '@/lib/schema';
+import { getProyectosDeServicio } from '@/lib/proyectos';
+import { site, telHref, whatsappHref } from '@/config/site';
+
+export const getStaticPaths = (async () => {
+  const servicios = await getCollection('servicios');
+  return servicios.map((s) => ({ params: { slug: s.id }, props: { servicio: s } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  servicio: CollectionEntry<'servicios'>;
+}
+
+const { servicio } = Astro.props;
+const { data } = servicio;
+const { Content } = await render(servicio);
+const path = `/servicios/${servicio.id}/`;
+
+const otros = (await getCollection('servicios'))
+  .filter((s) => s.id !== servicio.id)
+  .sort((a, b) => a.data.order - b.data.order);
+const proyectos = await getProyectosDeServicio(servicio.id, 6);
+const faqs = (await getCollection('faq', (f) => f.data.showOn.includes(servicio.id)))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((f) => ({ question: f.data.question, answer: f.data.answer }));
+const guias = (await getCollection('blog', (b) => !b.data.draft && b.data.servicios.includes(servicio.id))).slice(0, 3);
+
+const img = await getImage({ src: data.image, width: 1200, format: 'jpg' });
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Servicios', href: '/servicios/' },
+  { name: data.navLabel, href: path },
+];
+
+// El marcado FAQPage vive solo en /preguntas-frecuentes/ (Google pide no
+// repetir la misma pregunta marcada en varias páginas).
+const schema: object[] = [
+  breadcrumbSchema(crumbs),
+  serviceSchema({ name: data.title, description: data.description, path, image: new URL(img.src, Astro.site).href }),
+];
+---
+
+<BaseLayout title={data.seoTitle} description={data.description} ogImage={data.image} ogImageAlt={data.imageAlt} schema={schema}>
+  <PageHeader title={data.title} eyebrow="Servicio" crumbs={crumbs} image={data.image} imageAlt={data.imageAlt}>
+    {data.summary}
+  </PageHeader>
+
+  <section aria-label="Descripción del servicio" class="py-16 lg:py-24">
+    <div class="container-ks grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div class="prose-ks" data-reveal>
+        <Content />
+      </div>
+
+      <aside aria-labelledby="ficha-titulo" class="lg:sticky lg:top-28 lg:self-start" data-reveal>
+        <div class="rounded-[var(--radius-card)] bg-espuma p-7 ring-1 ring-linea">
+          <h2 id="ficha-titulo" class="text-xl font-semibold">En resumen</h2>
+          <ul class="mt-5 space-y-3">
+            {
+              data.highlights.map((h) => (
+                <li class="flex items-start gap-3">
+                  <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-azul-texto">
+                    <Icon name="check" size={14} />
+                  </span>
+                  {h}
+                </li>
+              ))
+            }
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-azul-texto">
+                <Icon name="pin" size={14} />
+              </span>
+              Trabajamos en {site.area.locality}
+            </li>
+          </ul>
+          <a href="/presupuesto/" class="btn btn-cta mt-7 w-full">Pide presupuesto</a>
+          <div class="mt-3 grid grid-cols-2 gap-3">
+            <a href={telHref} class="btn btn-borde !px-3 text-sm">
+              <Icon name="phone" size={16} /> Llamar
+            </a>
+            <a href={whatsappHref} rel="noopener" target="_blank" class="btn btn-borde !px-3 text-sm">
+              <Icon name="whatsapp" size={16} /> WhatsApp<span class="sr-only"> (se abre en una ventana nueva)</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {
+    proyectos.length > 0 && (
+      <section aria-labelledby="obras-servicio" class="bg-arena py-16 lg:py-24">
+        <div class="container-ks">
+          <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+            <div data-reveal>
+              <p class="eyebrow">Obras reales</p>
+              <h2 id="obras-servicio" class="mt-3 text-3xl font-semibold sm:text-4xl">
+                Trabajos de {data.navLabel.toLowerCase()}
+              </h2>
+            </div>
+            <a href="/proyectos/" class="btn btn-borde self-start" data-reveal>
+              Ver todos los proyectos <Icon name="arrow" size={18} />
+            </a>
+          </div>
+          <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {proyectos.map((p, i) => (
+              <li data-reveal style={`--reveal-delay:${i}`}>
+                <ProjectCard proyecto={p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+        <Lightbox />
+      </section>
+    )
+  }
+
+  {
+    faqs.length > 0 && (
+      <section aria-labelledby="faq-servicio" class="py-16 lg:py-24">
+        <div class="container-ks grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div data-reveal>
+            <p class="eyebrow">Dudas frecuentes</p>
+            <h2 id="faq-servicio" class="mt-3 text-3xl font-semibold sm:text-4xl">
+              Preguntas sobre {data.navLabel.toLowerCase()}
+            </h2>
+            <a href="/preguntas-frecuentes/" class="btn btn-borde mt-8">
+              Todas las preguntas <Icon name="arrow" size={18} />
+            </a>
+          </div>
+          <div data-reveal>
+            <FaqAccordion items={faqs} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section aria-labelledby="mas-servicios" class:list={['py-16 lg:py-24', faqs.length > 0 && 'bg-espuma']}>
+    <div class="container-ks">
+      <h2 id="mas-servicios" class="text-2xl font-semibold sm:text-3xl" data-reveal>Otros servicios</h2>
+      <ul class="mt-8 grid gap-4 md:grid-cols-3">
+        {
+          otros.map((s) => (
+            <li data-reveal>
+              <a
+                href={`/servicios/${s.id}/`}
+                class="group flex h-full items-center justify-between gap-4 rounded-[var(--radius-card)] bg-white p-6 font-display text-lg font-semibold text-marino no-underline shadow-card ring-1 ring-linea transition-shadow hover:shadow-lift"
+              >
+                {s.data.navLabel}
+                <Icon name="arrow" size={20} class="text-azul transition-transform group-hover:translate-x-1" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      {
+        guias.length > 0 && (
+          <div class="mt-12" data-reveal>
+            <h3 class="text-xl font-semibold">Guías relacionadas</h3>
+            <ul class="mt-4 space-y-2">
+              {guias.map((g) => (
+                <li>
+                  <a href={`/blog/${g.id}/`}>{g.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaContact title={`¿Te preparamos un presupuesto de ${data.navLabel.toLowerCase()}?`} />
+</BaseLayout>

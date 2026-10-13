@@ -1,0 +1,76 @@
+---
+import { Picture } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/ui/PageHeader.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema, type Crumb } from '@/lib/schema';
+import cabecera from '@/assets/obras/piscina-escalera-obra-gresite-azul.jpg';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
+const crumbs: Crumb[] = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Servicios', href: '/servicios/' },
+];
+---
+
+<BaseLayout
+  title="Servicios de construcción y reforma de piscinas | KS Piscinas"
+  description="Construcción de piscinas de obra, reforma y rehabilitación, equipamiento e iluminación LED y espacios exteriores en Madrid. Conoce todos nuestros servicios."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <PageHeader
+    title="Servicios para tu piscina"
+    eyebrow="Qué hacemos"
+    crumbs={crumbs}
+    image={cabecera}
+    imageAlt="Escalera de obra de ancho completo revestida de gresite azul en una piscina"
+  >
+    Construimos piscinas de obra, rehabilitamos las que ya tienes, las equipamos a medida y cuidamos el
+    espacio exterior que las rodea. Todo con el mismo equipo, en Madrid.
+  </PageHeader>
+
+  <section aria-label="Lista de servicios" class="py-20 lg:py-28">
+    <ul class="container-ks space-y-20 lg:space-y-28">
+      {
+        servicios.map((s, i) => (
+          <li class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <div class:list={['overflow-hidden rounded-[2rem] shadow-card', i % 2 === 1 && 'lg:order-2']} data-reveal>
+              <Picture
+                src={s.data.image}
+                formats={['avif', 'webp']}
+                widths={[480, 720, 960, 1200]}
+                sizes="(min-width: 1280px) 600px, (min-width: 1024px) 48vw, 92vw"
+                alt={s.data.imageAlt}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                class="aspect-[4/3] h-full w-full object-cover"
+              />
+            </div>
+            <div data-reveal>
+              <p class="eyebrow">Servicio {String(i + 1).padStart(2, '0')}</p>
+              <h2 class="mt-3 text-3xl font-semibold sm:text-4xl">{s.data.navLabel}</h2>
+              <p class="mt-5 text-lg text-piedra">{s.data.summary}</p>
+              <ul class="mt-6 space-y-3">
+                {s.data.highlights.map((h) => (
+                  <li class="flex items-center gap-3">
+                    <span class="flex size-7 items-center justify-center rounded-full bg-espuma text-azul-texto">
+                      <Icon name="check" size={16} />
+                    </span>
+                    {h}
+                  </li>
+                ))}
+              </ul>
+              <a href={`/servicios/${s.id}/`} class="btn btn-primario mt-8">
+                Ver {s.data.navLabel.toLowerCase()}
+                <Icon name="arrow" size={18} />
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <CtaContact />
+</BaseLayout>

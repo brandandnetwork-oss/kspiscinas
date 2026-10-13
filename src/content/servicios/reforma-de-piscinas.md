@@ -13,6 +13,28 @@ highlights:
   - Gresite en piscinas de poliéster
 ---
 
-Reformamos tu piscina por completo y la dejamos como nueva. Realizamos reparaciones estéticas o estructurales y reformas menores como el cambio de bordillo, de revestimientos obsoletos o dañados, lechadas y mantenimiento.
+**Reformamos tu piscina por completo y la dejamos como nueva.** Tanto si pierde agua o tiene daños en la estructura como si simplemente se ha quedado anticuada, estudiamos su estado y te proponemos la solución que necesita.
 
-También instalamos gresite en piscinas de poliéster, hacemos limpieza en profundidad del vaso y rejuntado, y rediseñamos el interior del vaso.
+## Qué tipo de reformas hacemos
+
+- **Reparaciones estructurales y estéticas** del vaso.
+- **Cambio de bordillo** (coronación).
+- **Sustitución de revestimientos** obsoletos o dañados, por gresite o porcelánico.
+- **Lechadas y rejuntado** del gresite.
+- **Limpieza en profundidad** del vaso.
+- **Rediseño del interior del vaso**: escaleras, bancos y otros elementos.
+- **Gresite en piscinas de poliéster**: renovamos piscinas prefabricadas revistiéndolas de gresite.
+
+## Señales de que tu piscina necesita una reforma
+
+- Pierde agua más de lo normal por evaporación.
+- Hay piezas de gresite sueltas, juntas abiertas o lechadas deterioradas.
+- El bordillo está roto, suelto o resbala.
+- El revestimiento ha perdido el color o la superficie está áspera.
+- Quieres cambiar el aspecto de la piscina o añadirle elementos como escaleras de obra o iluminación.
+
+## Cómo trabajamos una reforma
+
+Primero vemos la piscina para valorar su estado real. Con esa información te explicamos qué conviene hacer y te damos un **presupuesto sin compromiso**. Después ejecutamos la reforma y, al terminar, **no desaparecemos**: puedes contactarnos siempre que lo necesites.
+
+Si además quieres mejorar el equipamiento, mira lo que podemos hacer en [equipamiento e iluminación](/servicios/equipamiento-e-iluminacion/).
