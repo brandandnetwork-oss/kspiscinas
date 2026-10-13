@@ -287,10 +287,10 @@ Todos los pares texto/fondo se comprueban a **AA o más** en la Fase 2 antes de 
 | `/politica-de-privacidad/` | Se mantiene | — |
 | `/politica-de-cookies-ue/` | `/politica-de-cookies/` | 301 |
 | `/author/*`, `/?author=*` | — | **410** (elimina el email expuesto) |
-| `/feed/` | `/rss.xml` (feed del blog) | 301 |
+| `/feed/` | `/blog/` | 301 |
 | `/comments/feed/` | — | 410 |
 | `/wp-sitemap.xml`, `/sitemap.xml`, `/wp-sitemap-*.xml` | `/sitemap-index.xml` | 301 |
-| `/wp-content/uploads/…` (19 fotos de la galería) | Nueva URL de cada imagen optimizada | 301 (para conservar Google Imágenes) |
+| `/wp-content/uploads/…` (imágenes) | `/proyectos/` | 301 |
 | `/wp-admin/*`, `/wp-login.php`, `/xmlrpc.php` | — | 410 |
 
 **Antes del lanzamiento:** exportar las URLs con impresiones desde Search Console (si hay acceso) para confirmar que ninguna se queda fuera.
