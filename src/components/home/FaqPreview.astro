@@ -1,0 +1,27 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import FaqAccordion from '@/components/ui/FaqAccordion.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+interface Props {
+  items: { question: string; answer: string }[];
+}
+const { items } = Astro.props;
+---
+
+<section aria-labelledby="faq-titulo" class="bg-espuma py-20 lg:py-28">
+  <div class="container-ks grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+    <div>
+      <SectionHeading eyebrow="Preguntas frecuentes" title="Lo que más nos preguntan" id="faq-titulo">
+        Si tienes otra duda, escríbenos y te respondemos sin compromiso.
+      </SectionHeading>
+      <a href="/preguntas-frecuentes/" class="btn btn-borde mt-8" data-reveal>
+        Ver todas las preguntas
+        <Icon name="arrow" size={18} />
+      </a>
+    </div>
+    <div data-reveal>
+      <FaqAccordion items={items} />
+    </div>
+  </div>
+</section>

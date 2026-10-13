@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/home/Hero.astro';
+import ServicesGrid from '@/components/home/ServicesGrid.astro';
+import Values from '@/components/home/Values.astro';
+import WorksGallery from '@/components/home/WorksGallery.astro';
+import ProcessPreview from '@/components/home/ProcessPreview.astro';
+import FaqPreview from '@/components/home/FaqPreview.astro';
+import CtaContact from '@/components/ui/CtaContact.astro';
+import { faqSchema } from '@/lib/schema';
+
+const faqs = (await getCollection('faq', (f) => f.data.showOn.includes('home')))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((f) => ({ question: f.data.question, answer: f.data.answer }));
+---
+
+<BaseLayout
+  title="Construcción y reforma de piscinas en Madrid | KS Piscinas"
+  description="Construimos y reformamos piscinas de obra en Madrid: hormigón gunitado, gresite y porcelánico, iluminación LED y exteriores. Pide presupuesto sin compromiso."
+  schema={[faqSchema(faqs)]}
+>
+  <Hero />
+  <ServicesGrid />
+  <Values />
+  <WorksGallery />
+  <ProcessPreview />
+  <FaqPreview items={faqs} />
+  <CtaContact />
+</BaseLayout>

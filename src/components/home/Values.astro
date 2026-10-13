@@ -1,0 +1,55 @@
+---
+/**
+ * Argumentos de valor. Solo afirmaciones que constan en la web original;
+ * no se añaden cifras (años, nº de obras, garantías) hasta que KS las aporte.
+ */
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon, { type IconName } from '@/components/ui/Icon.astro';
+
+const valores: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'drop',
+    title: 'Estanqueidad perfecta',
+    text: 'Vasos de hormigón proyectado (gunitado): una estructura continua, sin juntas, pensada para no perder agua.',
+  },
+  {
+    icon: 'sparkle',
+    title: 'Acabados de primera',
+    text: 'Gresite o porcelánico colocados con cuidado hasta el mínimo detalle, en coronación, escaleras y vaso.',
+  },
+  {
+    icon: 'shield',
+    title: 'Depuración incluida',
+    text: 'Todas nuestras piscinas se entregan con su sistema de depuración, listas para disfrutar.',
+  },
+  {
+    icon: 'handshake',
+    title: 'Cerca después de la obra',
+    text: 'No desaparecemos al terminar: puedes contactarnos en cualquier momento si necesitas ayuda.',
+  },
+];
+---
+
+<section aria-labelledby="valores-titulo" class="relative overflow-hidden bg-marino py-20 text-white lg:py-28">
+  <div class="pointer-events-none absolute -top-24 -right-24 size-96 rounded-full bg-azul/25 blur-3xl" aria-hidden="true"></div>
+  <div class="container-ks relative grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+    <SectionHeading eyebrow="Por qué KS Piscinas" title="Una piscina bien hecha se nota cada verano" id="valores-titulo" dark>
+      Somos especialistas en piscinas de obra y cuidamos cada fase, de la excavación a la puesta en marcha,
+      para que el resultado dure.
+    </SectionHeading>
+
+    <ul class="grid gap-x-10 gap-y-12 sm:grid-cols-2">
+      {
+        valores.map((v, i) => (
+          <li data-reveal style={`--reveal-delay:${i}`}>
+            <span class="inline-flex size-12 items-center justify-center rounded-2xl bg-white/10 text-cielo ring-1 ring-white/20">
+              <Icon name={v.icon} size={24} />
+            </span>
+            <h3 class="mt-5 text-xl font-semibold !text-white">{v.title}</h3>
+            <p class="mt-2 text-white/80">{v.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

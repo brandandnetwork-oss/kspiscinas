@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { telHref, site } from '@/config/site';
+
+const enlaces = [
+  { label: 'Inicio', href: '/' },
+  { label: 'Servicios', href: '/servicios/' },
+  { label: 'Proyectos', href: '/proyectos/' },
+  { label: 'Pide presupuesto', href: '/presupuesto/' },
+  { label: 'Contacto', href: '/contacto/' },
+];
+---
+
+<BaseLayout
+  title="Página no encontrada | KS Piscinas"
+  description="La página que buscas no existe o ha cambiado de dirección. Te dejamos enlaces útiles de KS Piscinas."
+  noindex
+>
+  <section class="bg-espuma py-24 lg:py-32">
+    <div class="container-ks max-w-3xl text-center">
+      <p class="eyebrow flex items-center justify-center gap-3">
+        <span class="teselas" style="--t:8px" aria-hidden="true"></span>
+        Error 404
+      </p>
+      <h1 class="mt-5 text-4xl font-semibold sm:text-5xl">Esta página se ha quedado sin agua</h1>
+      <p class="mt-6 text-lg text-piedra">
+        La dirección que buscas no existe o ha cambiado con la nueva web. Estos enlaces te pueden ayudar:
+      </p>
+      <ul class="mt-10 flex flex-wrap justify-center gap-3">
+        {
+          enlaces.map((e) => (
+            <li>
+              <a href={e.href} class="btn btn-borde">
+                {e.label}
+                <Icon name="arrow" size={16} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-10 text-piedra">
+        ¿Prefieres hablar con nosotros? Llámanos al <a href={telHref}>{site.phone.display}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

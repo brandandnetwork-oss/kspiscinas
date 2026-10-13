@@ -1,0 +1,64 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '@/components/ui/Icon.astro';
+import heroImg from '@/assets/obras/piscina-obra-gresite-azul-jardin.jpg';
+import { whatsappHref } from '@/config/site';
+
+const chips = ['Hormigón gunitado', 'Gresite y porcelánico', 'Depuración incluida', 'Presupuesto sin compromiso'];
+---
+
+<section aria-labelledby="hero-titulo" class="relative isolate overflow-hidden bg-noche">
+  <Picture
+    src={heroImg}
+    formats={['avif', 'webp']}
+    widths={[480, 768, 1024, 1440, 2048]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    alt="Piscina de obra rectangular con revestimiento de gresite azul y coronación clara en un jardín con césped"
+    class="absolute inset-0 -z-10 h-full w-full object-cover object-[50%_60%]"
+  />
+  <!-- Degradado para garantizar contraste AA del texto sobre la foto -->
+  <div
+    class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(19_24_74/0.35)_0%,rgb(19_24_74/0.15)_35%,rgb(19_24_74/0.85)_78%,rgb(19_24_74/0.96)_100%)] lg:bg-[linear-gradient(90deg,rgb(19_24_74/0.92)_0%,rgb(19_24_74/0.7)_45%,rgb(19_24_74/0.1)_80%)]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="container-ks flex flex-col justify-end pt-36 pb-10 sm:min-h-[calc(88svh-4.5rem)] sm:pt-40 sm:pb-20 lg:min-h-[min(48rem,calc(100svh-5rem))] lg:justify-center lg:py-24">
+    <div class="max-w-2xl">
+      <p class="eyebrow-claro flex items-center gap-3">
+        <span class="teselas" style="--t:9px" aria-hidden="true"></span>
+        KS Piscinas · Madrid
+      </p>
+      <h1 id="hero-titulo" class="mt-5 text-[2.3rem] leading-[1.05] font-semibold !text-white sm:text-6xl lg:text-[4.25rem]">
+        Construcción y reforma de piscinas en Madrid
+      </h1>
+      <p class="mt-5 max-w-xl text-base text-white/90 sm:mt-6 sm:text-xl">
+        Piscinas de obra en hormigón gunitado, revestidas con gresite o porcelánico. Las diseñamos, las
+        construimos y las dejamos listas para el baño, con acabados de primera calidad.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row">
+        <a href="/presupuesto/" class="btn btn-cta text-lg">
+          Pide presupuesto sin compromiso
+          <Icon name="arrow" size={20} />
+        </a>
+        <a href={whatsappHref} rel="noopener" target="_blank" class="btn btn-claro">
+          <Icon name="whatsapp" size={20} />
+          Escríbenos por WhatsApp<span class="sr-only"> (se abre en una ventana nueva)</span>
+        </a>
+      </div>
+      <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-[0.95rem] text-white/90" aria-label="Lo que incluye">
+        {
+          chips.map((c) => (
+            <li class="flex items-center gap-2">
+              <Icon name="check" size={18} class="text-cielo" />
+              {c}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

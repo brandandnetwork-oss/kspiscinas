@@ -1,0 +1,48 @@
+---
+/**
+ * Avance del proceso de obra. Los plazos de cada fase están [PENDIENTE]:
+ * se añadirán en /como-trabajamos/ cuando KS los confirme.
+ */
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+const fases = [
+  { title: 'Contacto y visita', text: 'Nos cuentas tu idea y vemos el espacio para entender lo que necesitas.' },
+  { title: 'Diseño y presupuesto', text: 'Te proponemos forma, medidas, revestimiento y equipamiento, con presupuesto sin compromiso.' },
+  { title: 'Excavación y estructura', text: 'Excavamos y proyectamos el hormigón (gunitado) para formar un vaso estanco.' },
+  { title: 'Revestimiento y equipos', text: 'Colocamos gresite o porcelánico, la coronación y el sistema de depuración.' },
+  { title: 'Puesta en marcha', text: 'Llenamos, ponemos en marcha la piscina y seguimos a tu disposición.' },
+];
+---
+
+<section aria-labelledby="proceso-titulo" class="py-20 lg:py-28">
+  <div class="container-ks">
+    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+      <SectionHeading eyebrow="Cómo trabajamos" title="Tu piscina, paso a paso" id="proceso-titulo">
+        Un proceso claro, con un único equipo de principio a fin.
+      </SectionHeading>
+      <a href="/como-trabajamos/" class="btn btn-borde shrink-0 self-start lg:self-auto" data-reveal>
+        Ver el proceso completo
+        <Icon name="arrow" size={18} />
+      </a>
+    </div>
+
+    <ol class="relative mt-14 grid gap-10 lg:grid-cols-5 lg:gap-6">
+      <span class="absolute top-6 left-6 hidden h-0.5 w-[calc(100%-3rem)] bg-gradient-to-r from-azul via-cielo to-azul lg:block" aria-hidden="true"></span>
+      <span class="absolute top-6 bottom-6 left-6 w-0.5 -translate-x-1/2 bg-gradient-to-b from-azul via-cielo to-azul lg:hidden" aria-hidden="true"></span>
+      {
+        fases.map((f, i) => (
+          <li class="relative flex gap-5 lg:flex-col" data-reveal style={`--reveal-delay:${i}`}>
+            <span class="relative z-10 flex size-12 shrink-0 items-center justify-center rounded-full bg-marino font-display text-lg font-semibold text-white ring-8 ring-white">
+              {i + 1}
+            </span>
+            <div>
+              <h3 class="text-lg font-semibold">{f.title}</h3>
+              <p class="mt-2 text-[0.98rem] text-piedra">{f.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
