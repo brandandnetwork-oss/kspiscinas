@@ -14,7 +14,7 @@
 declare(strict_types=1);
 
 $config = [
-    'to' => 'sanchezkevin427@gmail.com',
+    'to' => 'info@kspiscinas.es',
     // Remitente del propio dominio (mejor entregabilidad): crea el buzón en Hostinger.
     'from' => 'web@kspiscinas.es',
     'from_name' => 'Web KS Piscinas',

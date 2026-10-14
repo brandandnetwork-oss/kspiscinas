@@ -8,7 +8,7 @@ Fecha: 13-10-2026. Estado: **aprobado** (13-10-2026), con las decisiones que sig
 |---|---|
 | Dirección | **No se publica.** Negocio de área de servicio; en el JSON-LD solo figura la localidad (Madrid) |
 | Titular legal | Pendiente. Los textos legales llevarán `[PENDIENTE]` hasta que se aporten razón social, NIF y domicilio |
-| Email público | `sanchezkevin427@gmail.com` |
+| Email público | `info@kspiscinas.es` |
 | Horario | Lunes a sábado, 9:00 – 20:00 |
 | Zonas | **Solo Madrid** por ahora. No se crean páginas locales por municipio hasta tener obras reales; la colección queda preparada |
 | Servicios | Los de la web original: construcción, reforma/rehabilitación, equipamiento e iluminación (piscinas a medida) y exteriores. **No** hay páginas de mantenimiento, climatización ni cubiertas |
