@@ -6,6 +6,6 @@ revestimiento: Gresite
 elementos: ["Escalera de obra"]
 servicios: [construccion-de-piscinas]
 destacado: false
-order: 11
+order: 111
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

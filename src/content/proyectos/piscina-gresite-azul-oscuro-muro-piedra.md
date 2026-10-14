@@ -6,6 +6,6 @@ revestimiento: Gresite
 elementos: ["Muro de piedra"]
 servicios: [construccion-de-piscinas, exteriores-y-jardin]
 destacado: false
-order: 14
+order: 114
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

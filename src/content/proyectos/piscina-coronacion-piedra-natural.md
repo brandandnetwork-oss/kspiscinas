@@ -6,6 +6,6 @@ revestimiento: Gresite
 elementos: ["Piedra natural", "Pavimento exterior"]
 servicios: [exteriores-y-jardin]
 destacado: false
-order: 7
+order: 107
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

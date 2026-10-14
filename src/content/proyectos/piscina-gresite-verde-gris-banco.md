@@ -5,7 +5,7 @@ imageAlt: "Detalle de piscina con gresite gris verdoso y banco de obra sumergido
 revestimiento: Gresite
 elementos: ["Banco de obra"]
 servicios: [construccion-de-piscinas]
-destacado: true
-order: 4
+destacado: false
+order: 104
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

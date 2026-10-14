@@ -2,7 +2,7 @@
 import { Picture } from 'astro:assets';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Icon from '@/components/ui/Icon.astro';
-import { getProyectos } from '@/lib/proyectos';
+import { getProyectos, hasFicha } from '@/lib/proyectos';
 import { site } from '@/config/site';
 
 // Las 5 obras marcadas como `destacado: true` en src/content/proyectos/.
@@ -39,7 +39,7 @@ const spans = [
       {
         obras.map((o, i) => (
           <li class:list={['group relative overflow-hidden rounded-[var(--radius-card)] bg-marino', spans[i]]} data-reveal style={`--reveal-delay:${i}`}>
-            <a href="/proyectos/" class="block h-full no-underline" aria-label={`${o.data.title}. Ver proyectos`}>
+            <a href={hasFicha(o) ? `/proyectos/${o.id}/` : '/proyectos/'} class="block h-full no-underline" aria-label={o.data.title}>
               <figure class="h-full">
                 <Picture
                   src={o.data.image}

@@ -5,7 +5,7 @@ imageAlt: "Piscina de obra rectangular con gresite azul y coronación clara rode
 revestimiento: Gresite
 elementos: ["Coronación", "Césped"]
 servicios: [construccion-de-piscinas, exteriores-y-jardin]
-destacado: true
-order: 1
+destacado: false
+order: 101
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

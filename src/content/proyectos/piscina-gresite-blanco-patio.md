@@ -6,6 +6,6 @@ revestimiento: Gresite
 elementos: ["Pavimento exterior"]
 servicios: [construccion-de-piscinas, exteriores-y-jardin]
 destacado: false
-order: 16
+order: 116
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

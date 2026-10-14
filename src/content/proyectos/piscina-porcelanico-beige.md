@@ -5,7 +5,7 @@ imageAlt: "Piscina rectangular revestida de porcelánico beige con coronación y
 revestimiento: Porcelánico
 elementos: ["Coronación", "Pavimento exterior"]
 servicios: [construccion-de-piscinas, exteriores-y-jardin]
-destacado: true
-order: 3
+destacado: false
+order: 103
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

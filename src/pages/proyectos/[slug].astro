@@ -54,30 +54,36 @@ const ficha = [
   ['Medidas', data.medidas],
   ['Revestimiento', data.revestimiento],
   ['Plazo de ejecución', data.plazo],
+  ['Elementos', data.elementos.join(', ')],
 ].filter((r): r is [string, string] => Boolean(r[1]));
 
-const description = `${data.title} en ${data.municipio}. ${data.imageAlt}. Obra realizada por KS Piscinas.`.slice(0, 160);
+const titulo = data.municipio ? `${data.title} en ${data.municipio}` : data.title;
+const description = (data.resumen ?? `${titulo}. ${data.imageAlt}. Obra realizada por KS Piscinas.`).slice(0, 160);
 ---
 
 <BaseLayout
-  title={`${data.title} en ${data.municipio} | KS Piscinas`}
+  title={`${titulo} | KS Piscinas`}
   description={description}
   ogImage={data.image}
   ogImageAlt={data.imageAlt}
   schema={[breadcrumbSchema(crumbs), ...fotosSchema]}
 >
-  <PageHeader title={data.title} eyebrow={data.municipio} crumbs={crumbs} image={data.image} imageAlt={data.imageAlt} />
+  <PageHeader title={data.title} eyebrow={data.municipio ?? 'Proyecto'} crumbs={crumbs} image={data.image} imageAlt={data.imageAlt}>
+    {data.resumen}
+  </PageHeader>
 
   <section class="py-16 lg:py-24" aria-label="Detalles de la obra">
     <div class="container-ks grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
       <div>
         {data.antes && <BeforeAfter before={data.antes} after={{ src: data.image, alt: data.imageAlt }} />}
-        <div class="prose-ks mt-10">
+        <div class:list={['prose-ks', data.antes && 'mt-10']}>
           <Content />
         </div>
         {
           data.gallery.length > 0 && (
-            <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+            <>
+            <h2 class="mt-12 text-2xl font-semibold">Fotos de la obra</h2>
+            <ul class="mt-6 grid gap-4 sm:grid-cols-2">
               {data.gallery.map(async (g) => {
                 const full = await getImage({ src: g.src, width: 1600, format: 'webp' });
                 return (
@@ -89,6 +95,7 @@ const description = `${data.title} en ${data.municipio}. ${data.imageAlt}. Obra 
                 );
               })}
             </ul>
+            </>
           )
         }
       </div>

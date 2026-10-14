@@ -5,7 +5,7 @@ imageAlt: "Escalera de obra de ancho completo revestida de gresite azul dentro d
 revestimiento: Gresite
 elementos: ["Escalera de obra"]
 servicios: [construccion-de-piscinas]
-destacado: true
-order: 5
+destacado: false
+order: 105
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

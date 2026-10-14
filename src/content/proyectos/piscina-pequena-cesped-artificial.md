@@ -6,6 +6,6 @@ revestimiento: Gresite
 elementos: ["Césped"]
 servicios: [exteriores-y-jardin]
 destacado: false
-order: 18
+order: 118
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

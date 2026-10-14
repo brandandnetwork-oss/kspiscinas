@@ -2,8 +2,11 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 type Proyecto = CollectionEntry<'proyectos'>;
 
-/** Una obra tiene ficha propia cuando se conoce al menos su municipio. */
-export const hasFicha = (p: Proyecto) => Boolean(p.data.municipio);
+/**
+ * Una obra tiene ficha propia cuando tiene descripción (cuerpo Markdown) o
+ * municipio; las que solo son una foto se abren en el visor de la galería.
+ */
+export const hasFicha = (p: Proyecto) => Boolean(p.body?.trim() || p.data.municipio);
 
 export async function getProyectos() {
   return (await getCollection('proyectos')).sort((a, b) => a.data.order - b.data.order);

@@ -41,12 +41,14 @@ const faq = defineCollection({
   }),
 });
 
-/** Obras. La ficha individual solo se publica si la obra tiene municipio. */
+/** Obras. La ficha individual se publica si la obra tiene descripción (cuerpo Markdown) o municipio. */
 const proyectos = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/proyectos' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      /** Resumen para la meta description de la ficha (≤ 160 caracteres). */
+      resumen: z.string().max(170).optional(),
       image: image(),
       imageAlt: z.string(),
       /** Fotos adicionales (proceso de obra, detalles, antes/después). */

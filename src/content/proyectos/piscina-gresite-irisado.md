@@ -6,6 +6,6 @@ revestimiento: Gresite
 elementos: ["Coronación"]
 servicios: [construccion-de-piscinas]
 destacado: false
-order: 12
+order: 112
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

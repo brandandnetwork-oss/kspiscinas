@@ -5,7 +5,7 @@ imageAlt: "Piscina de agua clara con chorros de pared en funcionamiento y escal√
 revestimiento: Gresite
 elementos: ["Chorros de pared"]
 servicios: [equipamiento-e-iluminacion]
-destacado: true
-order: 6
+destacado: false
+order: 106
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

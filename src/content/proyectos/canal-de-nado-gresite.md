@@ -6,6 +6,6 @@ revestimiento: Gresite
 elementos: ["Canal de nado", "Escalera de obra"]
 servicios: [construccion-de-piscinas]
 destacado: false
-order: 9
+order: 109
 # [PENDIENTE] municipio, medidas, plazo, tipo (Obra nueva / Reforma) y fecha
 ---

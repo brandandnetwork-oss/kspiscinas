@@ -1,6 +1,6 @@
 # Registro de obras enviadas por el cliente
 
-Estado: **recopilando información**. Aún no se ha añadido nada a la web; se hará cuando se dé la orden.
+Estado: **publicado en la web** (14-10-2026). Las 34 obras, más el escudo en gresite y una foto de detalle, son fichas en `src/content/proyectos/`, con las fotos optimizadas en `src/assets/proyectos/<obra>/` (máx. 1800 px, sin EXIF ni GPS).
 
 ## Origen
 
