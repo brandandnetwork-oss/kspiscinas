@@ -13,7 +13,7 @@ En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios
 - **Nombre comercial:** KS Piscinas
 - **NIF / CIF:** [PENDIENTE]
 - **Domicilio:** [PENDIENTE]
-- **Email:** sanchezkevin427@gmail.com
+- **Email:** info@kspiscinas.es
 - **Teléfono:** 641 45 28 29
 - **Datos registrales:** [PENDIENTE: solo si es sociedad inscrita en el Registro Mercantil]
 

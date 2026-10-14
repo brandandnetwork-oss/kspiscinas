@@ -20,7 +20,7 @@ export const site = {
     number: '34641452829',
     message: '¡Hola! Me gustaría pedir información sobre una piscina.',
   },
-  email: 'sanchezkevin427@gmail.com',
+  email: 'info@kspiscinas.es',
 
   /** Horario: lunes a sábado, 9:00–20:00. */
   hours: {
