@@ -9,3 +9,6 @@ _import/
 Thumbs.db
 docs/lighthouse/*.json
 public/api/config.php
+
+# Fotos originales del cliente (zip/HEIC): no se versionan
+img/
